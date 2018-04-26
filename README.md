@@ -27,6 +27,8 @@
 
 ※程序语言为Java,运行程序需要java环境的支持.如果没有Java环境请从这里下载：http://www.oracle.com/technetwork/cn/java/javase/downloads/jdk8-downloads-2133151-zhs.html
 
+※程序界面为日语,只会中文的同学不好意思,请看文字猜一下功能・・・应该不会有太大问题(懒癌发作不想做多语言对应・・・).
+
 导出的迷宫文件可以用这个工具找出口：https://github.com/zlwzxy1989/maze
 
 ※使用上面那个解迷宫工具时,如果迷宫很大,推荐从设定里把动画效果关掉,不然到了后半段会非常卡・・・
