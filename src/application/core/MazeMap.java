@@ -74,12 +74,12 @@ public class MazeMap {
           map[i][j] = new Button();
           map[i][j].setText("");
           map[i][j].setDisable(true);
-          map[i][j].setPrefWidth(conf.getPointWidth());
-          map[i][j].setMinWidth(conf.getPointWidth());
-          map[i][j].setMaxWidth(conf.getPointWidth());
-          map[i][j].setPrefHeight(conf.getPointWidth());
-          map[i][j].setMinHeight(conf.getPointWidth());
-          map[i][j].setMaxHeight(conf.getPointWidth());
+          map[i][j].setPrefWidth(conf.getMazeGridWidth());
+          map[i][j].setMinWidth(conf.getMazeGridWidth());
+          map[i][j].setMaxWidth(conf.getMazeGridWidth());
+          map[i][j].setPrefHeight(conf.getMazeGridWidth());
+          map[i][j].setMinHeight(conf.getMazeGridWidth());
+          map[i][j].setMaxHeight(conf.getMazeGridWidth());
         }
       }
       Main.setMazeMap(map);

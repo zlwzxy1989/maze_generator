@@ -12,6 +12,7 @@ import application.enumType.MazeType;
 import application.service.ConfigService;
 import application.service.DepthFirstAlgorithmService;
 import application.service.MazeBaseAlgorithmService;
+import application.service.RecursiveDivisionAlgorithmService;
 import application.service.StickAlgorithmService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +38,9 @@ public class MainController extends BaseController {
       break;
     case 穴掘り法:
       service = new DepthFirstAlgorithmService(MazeMap.getInstance().getMazePoints());
+      break;
+    case 再帰分割法:
+      service = new RecursiveDivisionAlgorithmService(MazeMap.getInstance().getMazePoints());
       break;
     }
     service.generate(dto.isShowAnime());
@@ -97,9 +101,9 @@ public class MainController extends BaseController {
     try (BufferedWriter w = Files.newBufferedWriter(saveMazeFile.toPath())) {
       w.write(mazeStr);
       w.flush();
-      showInfoAlert("迷宮ファイルを保存しました");
+      showInfoAlert("迷宮ファイルを出力しました");
     } catch (IOException e) {
-      showErrorAlert("迷宮ファイルの保存に失敗しました");
+      showErrorAlert("迷宮ファイルの出力に失敗しました");
       e.printStackTrace();
     }
   }

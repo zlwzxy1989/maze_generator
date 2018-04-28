@@ -22,7 +22,7 @@
                         <KeyCodeCombination alt="UP" code="G" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem fx:id="MISaveMaze" mnemonicParsing="false" onAction="#MISaveMazeAction" text="迷宮を保存">
+                  <MenuItem fx:id="MISaveMaze" mnemonicParsing="false" onAction="#MISaveMazeAction" text="迷宮を出力...">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

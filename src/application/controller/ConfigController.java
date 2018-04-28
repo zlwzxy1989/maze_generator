@@ -31,6 +31,8 @@ public class ConfigController extends BaseController implements Initializable {
   @FXML
   private TextField TFMazeHeight;
   @FXML
+  private TextField TFMazeGridWidth;
+  @FXML
   private Button BInitMaze;
   @FXML
   private Button BInitMazeCancel;
@@ -51,7 +53,7 @@ public class ConfigController extends BaseController implements Initializable {
     String mazeWidthStr = TFMazeWidth.getText();
     String mazeHeightStr = TFMazeHeight.getText();
     String mazeTypeStr = CBMazeTypeList.getValue();
-
+    String mazeGridWidthStr = TFMazeGridWidth.getText();
     String errMsg;
     // エラーチェック
     errMsg = configService.checkMazeWidth(mazeWidthStr);
@@ -64,9 +66,15 @@ public class ConfigController extends BaseController implements Initializable {
       showErrorAlert(errMsg);
       return;
     }
+    errMsg = configService.checkGridWidth(mazeGridWidthStr);
+    if (!errMsg.equals("")) {
+      showErrorAlert(errMsg);
+      return;
+    }
     MazeConfigDto dto = new MazeConfigDto();
     dto.setMazeWidth(Integer.parseInt(mazeWidthStr));
     dto.setMazeHeight(Integer.parseInt(mazeHeightStr));
+    dto.setMazeGridWidth(Integer.parseInt(mazeGridWidthStr));
     dto.setMazeType(MazeType.valueOf(mazeTypeStr).getValue());
     if (configService.setInitConfig(dto)) {
       Main.setAppMazeGenState(false);
@@ -84,6 +92,7 @@ public class ConfigController extends BaseController implements Initializable {
     MazeConfigDto dto = ConfigService.getInitConfig();
     TFMazeWidth.setText(Integer.toString(dto.getMazeWidth()));
     TFMazeHeight.setText(Integer.toString(dto.getMazeHeight()));
+    TFMazeGridWidth.setText(Integer.toString(dto.getMazeGridWidth()));
     // 画面の初期化
     GridPane.setHalignment(BInitMaze, HPos.RIGHT);
     GridPane.setHalignment(BInitMazeCancel, HPos.RIGHT);

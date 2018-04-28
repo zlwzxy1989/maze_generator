@@ -1,3 +1,5 @@
 \.settings
 bin
 build
+application.properties
+deploy/application.properties

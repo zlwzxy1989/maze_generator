@@ -22,16 +22,19 @@
       <RowConstraints />
       <RowConstraints />
       <RowConstraints />
+      <RowConstraints />
    </rowConstraints>
    <children>
       <Label text="迷宮の幅" />
-      <TextField fx:id="TFMazeWidth" GridPane.columnIndex="1" />
+      <TextField fx:id="TFMazeWidth" promptText="10-100の数字" GridPane.columnIndex="1" />
       <Label text="迷宮の高さ" GridPane.rowIndex="1" />
-      <TextField fx:id="TFMazeHeight" prefHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <Label text="迷宮タイプ" GridPane.rowIndex="2" />
-      <ComboBox fx:id="CBMazeTypeList" prefWidth="150.0" styleClass="primary" GridPane.columnIndex="1" GridPane.rowIndex="2">
+      <TextField fx:id="TFMazeHeight" prefHeight="25.0" promptText="10-100の数字" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label text="迷宮タイプ" GridPane.rowIndex="3" />
+      <ComboBox fx:id="CBMazeTypeList" prefWidth="150.0" styleClass="primary" GridPane.columnIndex="1" GridPane.rowIndex="3">
       </ComboBox>
       <Button fx:id="BInitMaze" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#BInitMazeAction" styleClass="primary" text="初期化" GridPane.columnIndex="1" GridPane.rowIndex="4" />
       <Button fx:id="BInitMazeCancel" mnemonicParsing="false" onAction="#BInitMazeCancelAction" styleClass="danger" text="取消" GridPane.rowIndex="4" />
+      <Label text="マスの幅" GridPane.rowIndex="2" />
+      <TextField promptText="迷宮マスの幅" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="TFMazeGridWidth"/>
    </children>
 </GridPane>
