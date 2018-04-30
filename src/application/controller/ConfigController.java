@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -34,6 +35,8 @@ public class ConfigController extends BaseController implements Initializable {
   private TextField TFMazeGridWidth;
   @FXML
   private TextField TFMazeSightWidth;
+  @FXML
+  private CheckBox ChkBMazeSightIgnoreWall;
 
   @FXML
   private Button BInitMaze;
@@ -58,6 +61,7 @@ public class ConfigController extends BaseController implements Initializable {
     String mazeTypeStr = CBMazeTypeList.getValue();
     String mazeGridWidthStr = TFMazeGridWidth.getText();
     String mazeSightWidth = TFMazeSightWidth.getText();
+    boolean mazeSightIgnoreWall = ChkBMazeSightIgnoreWall.isSelected();
     String errMsg;
     // エラーチェック
     errMsg = configService.checkMazeWidth(mazeWidthStr);
@@ -86,6 +90,7 @@ public class ConfigController extends BaseController implements Initializable {
     dto.setMazeGridWidth(Integer.parseInt(mazeGridWidthStr));
     dto.setMazeSightWidth(Integer.parseInt(mazeSightWidth));
     dto.setMazeType(MazeType.valueOf(mazeTypeStr).getValue());
+    dto.setMazeSightIgnoreWall(mazeSightIgnoreWall);
     if (configService.setInitConfig(dto)) {
       Main.setAppMazeGenState(false);
       Main.setAppMazeInitState(true);
@@ -104,9 +109,11 @@ public class ConfigController extends BaseController implements Initializable {
     TFMazeHeight.setText(Integer.toString(dto.getMazeHeight()));
     TFMazeGridWidth.setText(Integer.toString(dto.getMazeGridWidth()));
     TFMazeSightWidth.setText(Integer.toString(dto.getMazeSightWidth()));
+    ChkBMazeSightIgnoreWall.setSelected(dto.isMazeSightIgnoreWall());
     // 画面の初期化
     GridPane.setHalignment(BInitMaze, HPos.RIGHT);
     GridPane.setHalignment(BInitMazeCancel, HPos.RIGHT);
+    //GridPane.setHalignment(ChkBMazeSightIgnoreWall, HPos.CENTER);
 
     CBMazeTypeList.getItems().clear();
     List<String> mazeTypeList = new ArrayList<>();

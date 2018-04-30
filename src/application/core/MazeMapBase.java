@@ -32,6 +32,16 @@ public abstract class MazeMapBase {
   }
 
   //== get
+  // 限界を超えないx座標を返す
+  protected int getSafeX(int x) {
+    return Math.min(Math.max(x, 0), maxWidth - 1);
+  }
+
+  // 限界を超えないy座標を返す
+  protected int getSafeY(int y) {
+    return Math.min(Math.max(y, 0), maxHeight - 1);
+  }
+
   protected MazePoint getStartPoint() {
     for (int i = 0; i < mazePoints.length; i++) {
       for (int j = 0; j < mazePoints[i].length; j++) {

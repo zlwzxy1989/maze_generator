@@ -76,6 +76,7 @@ public class MainController extends BaseController {
       dialogStage.initModality(Modality.WINDOW_MODAL);
       Scene scene = new Scene(initPage);
       dialogStage.setScene(scene);
+      dialogStage.setResizable(false);
       Main.setOwnerOf(dialogStage);
       setInitMazeStage(dialogStage);
 

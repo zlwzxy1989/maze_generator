@@ -16,6 +16,9 @@ public class MazeConfigDto {
   // 視界範囲
   private int mazeSightWidth = ConfigService.MAZE_SIGHT_WIDTH;
 
+  // 視界範囲が壁に遮断されるかどうか
+  private boolean mazeSightIgnoreWall = true;
+
   public boolean isSightMode() {
     return mazeSightWidth > 0;
   }

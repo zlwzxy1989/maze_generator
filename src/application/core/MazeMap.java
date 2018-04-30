@@ -149,14 +149,49 @@ public class MazeMap extends MazeMapBase {
     int currentX = point.getX();
     int currentY = point.getY();
     int sight = conf.getMazeSightWidth();
-    for (int i = 0; i <= sight; i++) {
-      for (int x = currentX - i; x <= currentX + i; x++) {
-        for (int y = currentY - (sight - i); y <= currentY + (sight - i); y++) {
-          int targetX = Math.min(Math.max(x, 0), conf.getMazeWidth() - 1);
-          int targetY = Math.min(Math.max(y, 0), conf.getMazeHeight() - 1);
-          MazePoint p = getPointByCoordinate(targetX, targetY);
-          p.setVisible(true);
-          refreshUI(p);
+    // 壁を無視なら視界内のマスは全部表示
+    if (conf.isMazeSightIgnoreWall()) {
+      for (int i = 0; i <= sight; i++) {
+        for (int x = currentX - i; x <= currentX + i; x++) {
+          for (int y = currentY - (sight - i); y <= currentY + (sight - i); y++) {
+            MazePoint p = getPointByCoordinate(getSafeX(x), getSafeY(y));
+            p.setVisible(true);
+            refreshUI(p);
+          }
+        }
+      }
+    } else {
+      // 四方向しか表示しない、且つ壁に当たると壁だけ表示して終了
+      for (int x = 1; x <= sight; x++) {
+        MazePoint p = getPointByCoordinate(getSafeX(currentX + x), currentY);
+        p.setVisible(true);
+        refreshUI(p);
+        if (isWall(p)) {
+          break;
+        }
+      }
+      for (int x = 1; x <= sight; x++) {
+        MazePoint p = getPointByCoordinate(getSafeX(currentX - x), currentY);
+        p.setVisible(true);
+        refreshUI(p);
+        if (isWall(p)) {
+          break;
+        }
+      }
+      for (int y = 1; y <= sight; y++) {
+        MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY + y));
+        p.setVisible(true);
+        refreshUI(p);
+        if (isWall(p)) {
+          break;
+        }
+      }
+      for (int y = 1; y <= sight; y++) {
+        MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY - y));
+        p.setVisible(true);
+        refreshUI(p);
+        if (isWall(p)) {
+          break;
         }
       }
     }
@@ -183,11 +218,13 @@ public class MazeMap extends MazeMapBase {
 
     // 未訪問のマスにアクセスしようとしている
     if (lastVisitedPoint != null) {
+      int minX = Math.min(lastVisitedPoint.getX(), point.getX());
+      int maxX = Math.max(lastVisitedPoint.getX(), point.getX());
+      int minY = Math.min(lastVisitedPoint.getY(), point.getY());
+      int maxY = Math.max(lastVisitedPoint.getY(), point.getY());
       // 途中の点なら最後の経過点から縦、あるいは横移動しかできない
       // 縦移動
       if (lastVisitedPoint.getX() == point.getX()) {
-        int maxY = Math.max(lastVisitedPoint.getY(), point.getY());
-        int minY = Math.min(lastVisitedPoint.getY(), point.getY());
         // 壁があるなら処理しない
         if (!isColRoad(point.getX(), minY, maxY)) {
           showUnclickable(point);
@@ -203,8 +240,6 @@ public class MazeMap extends MazeMapBase {
       }
       // 横移動
       else if (lastVisitedPoint.getY() == point.getY()) {
-        int maxX = Math.max(lastVisitedPoint.getX(), point.getX());
-        int minX = Math.min(lastVisitedPoint.getX(), point.getX());
         // 壁があるなら処理しない
         if (!isRowRoad(point.getY(), minX, maxX)) {
           showUnclickable(point);
@@ -218,9 +253,52 @@ public class MazeMap extends MazeMapBase {
         }
 
       } else {
-        // 斜め移動はだめ
-        showUnclickable(point);
-        return false;
+        // 一回だけ曲がることを許可する
+        MazePoint leftUpPoint = getPointByCoordinate(minX, maxY);
+        MazePoint leftDownPoint = getPointByCoordinate(minX, minY);
+        int roadX = 0;
+        int roadY = 0;
+        boolean hasRoad = false;
+        // 左上と右下の場合
+        if (lastVisitedPoint.equals(leftUpPoint) || point.equals(leftUpPoint)) {
+          if (isColRoad(minX, minY, maxY) && isRowRoad(minY, minX, maxX)) {
+            roadX = minX;
+            roadY = minY;
+            hasRoad = true;
+          } else if (isColRoad(maxX, minY, maxY) && isRowRoad(maxY, minX, maxX)) {
+            roadX = maxX;
+            roadY = maxY;
+            hasRoad = true;
+          }
+          // 左下と右上の場合
+        } else if (lastVisitedPoint.equals(leftDownPoint) || point.equals(leftDownPoint)) {
+          if (isColRoad(minX, minY, maxY) && isRowRoad(maxY, minX, maxX)) {
+            roadX = minX;
+            roadY = maxY;
+            hasRoad = true;
+          } else if (isColRoad(maxX, minY, maxY) && isRowRoad(minY, minX, maxX)) {
+            roadX = maxX;
+            roadY = minY;
+            hasRoad = true;
+          }
+        }
+        if (hasRoad) {
+          for (int y = minY; y <= maxY; y++) {
+            MazePoint p = getPointByCoordinate(roadX, y);
+            p.setVisited(true);
+            setSight(p);
+            refreshUI(p);
+          }
+          for (int x = minX; x <= maxX; x++) {
+            MazePoint p = getPointByCoordinate(x, roadY);
+            p.setVisited(true);
+            setSight(p);
+            refreshUI(p);
+          }
+        } else {
+          showUnclickable(point);
+          return false;
+        }
       }
       lastVisitedPoint.setCuurentPoint(false);
       refreshUI(lastVisitedPoint);

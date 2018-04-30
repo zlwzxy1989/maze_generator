@@ -21,7 +21,7 @@ public class ConfigService {
 
   public static final int MAZE_GRID_WIDTH = 10;
 
-  public static final int MAZE_SIGHT_WIDTH = 0;
+  public static final int MAZE_SIGHT_WIDTH = 5;
 
   private static MazeConfigDto dto = null;
 
@@ -35,6 +35,7 @@ public class ConfigService {
       dto.setMazeType(Integer.parseInt(prop.getProperty("mazeType")));
       dto.setMazeGridWidth(Integer.parseInt(prop.getProperty("mazeGridWidth", Integer.toString(MAZE_GRID_WIDTH))));
       dto.setMazeSightWidth(Integer.parseInt(prop.getProperty("mazeSightWidth", Integer.toString(MAZE_SIGHT_WIDTH))));
+      dto.setMazeSightIgnoreWall(Boolean.parseBoolean(prop.getProperty("mazeSightIgnoreWall", "true")));
     } catch (IOException | NumberFormatException e) {
       System.out.println("初期設定の読込みに失敗しました");
     }
@@ -58,6 +59,7 @@ public class ConfigService {
     prop.setProperty("mazeType", Integer.toString(dto.getMazeType()));
     prop.setProperty("mazeGridWidth", Integer.toString(dto.getMazeGridWidth()));
     prop.setProperty("mazeSightWidth", Integer.toString(dto.getMazeSightWidth()));
+    prop.setProperty("mazeSightIgnoreWall", Boolean.toString(dto.isMazeSightIgnoreWall()));
     try {
       prop.store(new FileOutputStream("application.properties"),
           "updated at " + LocalDateTime.now());
