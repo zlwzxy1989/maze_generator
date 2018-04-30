@@ -13,6 +13,13 @@ public class MazeConfigDto {
   // マス幅
   private int mazeGridWidth = ConfigService.MAZE_GRID_WIDTH;
 
+  // 視界範囲
+  private int mazeSightWidth = ConfigService.MAZE_SIGHT_WIDTH;
+
+  public boolean isSightMode() {
+    return mazeSightWidth > 0;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (o == null || !(o instanceof MazeConfigDto)) {
@@ -20,12 +27,13 @@ public class MazeConfigDto {
     }
     MazeConfigDto other = (MazeConfigDto) o;
     return (this.getMazeHeight() == other.getMazeHeight() && this.getMazeWidth() == other.getMazeWidth()
-        && this.getMazeGridWidth() == other.getMazeGridWidth());
+        && this.getMazeGridWidth() == other.getMazeGridWidth()
+        && this.getMazeSightWidth() == other.getMazeSightWidth());
   }
 
   @Override
   public int hashCode() {
-    return Integer.parseInt(Integer.toString(getMazeHeight()) + "_" + Integer.toString(getMazeWidth()) + "_"
-        + Integer.toString(getMazeGridWidth()));
+    return Integer.parseInt(Integer.toString(getMazeHeight()) + "0" + Integer.toString(getMazeWidth()) + "_"
+        + Integer.toString(getMazeGridWidth()) + "0" + Integer.toString(getMazeSightWidth()));
   }
 }

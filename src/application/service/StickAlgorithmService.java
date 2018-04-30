@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import application.Utils.CommonUtil;
+import application.core.MazeGenerator;
 import application.core.MazePoint;
 import application.enumType.MazePointPosition;
 
 // 棒倒し法
-public class StickAlgorithmService extends MazeBaseAlgorithmService {
+public class StickAlgorithmService extends MazeGenerator {
   public StickAlgorithmService() {
     super();
   }
@@ -46,7 +48,7 @@ public class StickAlgorithmService extends MazeBaseAlgorithmService {
     }
     // 起点と終点を道にする
     setToRoad(startPoint);
-    setToWall(endPoint);
+    setToRoad(endPoint);
   }
 
   private void pullDownStick(MazePoint point, boolean allowedPullUp) {
@@ -64,6 +66,6 @@ public class StickAlgorithmService extends MazeBaseAlgorithmService {
       return;
     }
     // ランダムで一つ候補を決める
-    setToWall(availablePoints.get(getRandomInt(availablePoints.size())));
+    setToWall(availablePoints.get(CommonUtil.getRandomInt(availablePoints.size())));
   }
 }

@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import application.Utils.CommonUtil;
+import application.core.MazeGenerator;
 import application.core.MazePoint;
 
-public class DepthFirstAlgorithmService extends MazeBaseAlgorithmService {
+public class DepthFirstAlgorithmService extends MazeGenerator {
 
   public DepthFirstAlgorithmService() {
     super();
@@ -40,7 +42,7 @@ public class DepthFirstAlgorithmService extends MazeBaseAlgorithmService {
     int widthFix = (maxWidth + 1) % 2;
     int heightFix = (maxHeight + 1) % 2;
     buffer.add(
-        getPointByCoordinate(getRandomInt(maxWidth / 2) * 2 + widthFix, getRandomInt(maxHeight / 2) * 2 + heightFix));
+        getPointByCoordinate(CommonUtil.getRandomInt(maxWidth / 2) * 2 + widthFix, CommonUtil.getRandomInt(maxHeight / 2) * 2 + heightFix));
     while (!buffer.isEmpty()) {
       // 深さ優先なので、最後に追加した候補を使う
       MazePoint currentPoint = buffer.get(buffer.size() - 1);
@@ -53,7 +55,7 @@ public class DepthFirstAlgorithmService extends MazeBaseAlgorithmService {
           buffer.add(currentPoint);
         }
         // ランダムで一つのルートを選ぶ
-        MazePoint next = nextPointList.get(getRandomInt(nextPointList.size()));
+        MazePoint next = nextPointList.get(CommonUtil.getRandomInt(nextPointList.size()));
         //current->nextの道を作る
         setToRoad(currentPoint);
         setToRoad(next);

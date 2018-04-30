@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import application.Utils.FXUtil;
 import application.core.MazeMap;
 import application.dto.MazeConfigDto;
 import application.enumType.MazeType;
@@ -27,11 +28,13 @@ public class ConfigController extends BaseController implements Initializable {
 
   @FXML
   private TextField TFMazeWidth;
-
   @FXML
   private TextField TFMazeHeight;
   @FXML
   private TextField TFMazeGridWidth;
+  @FXML
+  private TextField TFMazeSightWidth;
+
   @FXML
   private Button BInitMaze;
   @FXML
@@ -44,7 +47,7 @@ public class ConfigController extends BaseController implements Initializable {
 
   public void BInitMazeCancelAction(ActionEvent event) {
     System.out.println("init cancelled...");
-    closeWindow((Node) event.getSource());
+    FXUtil.closeWindow((Node) event.getSource());
   }
 
   public void BInitMazeAction(ActionEvent event) {
@@ -54,35 +57,42 @@ public class ConfigController extends BaseController implements Initializable {
     String mazeHeightStr = TFMazeHeight.getText();
     String mazeTypeStr = CBMazeTypeList.getValue();
     String mazeGridWidthStr = TFMazeGridWidth.getText();
+    String mazeSightWidth = TFMazeSightWidth.getText();
     String errMsg;
     // エラーチェック
     errMsg = configService.checkMazeWidth(mazeWidthStr);
     if (!errMsg.equals("")) {
-      showErrorAlert(errMsg);
+      FXUtil.showErrorAlert(errMsg);
       return;
     }
     errMsg = configService.checkMazeHeight(mazeHeightStr);
     if (!errMsg.equals("")) {
-      showErrorAlert(errMsg);
+      FXUtil.showErrorAlert(errMsg);
       return;
     }
-    errMsg = configService.checkGridWidth(mazeGridWidthStr);
+    errMsg = configService.checkMazeGridWidth(mazeGridWidthStr);
     if (!errMsg.equals("")) {
-      showErrorAlert(errMsg);
+      FXUtil.showErrorAlert(errMsg);
+      return;
+    }
+    errMsg = configService.checkMazeSightWidth(mazeSightWidth);
+    if (!errMsg.equals("")) {
+      FXUtil.showErrorAlert(errMsg);
       return;
     }
     MazeConfigDto dto = new MazeConfigDto();
     dto.setMazeWidth(Integer.parseInt(mazeWidthStr));
     dto.setMazeHeight(Integer.parseInt(mazeHeightStr));
     dto.setMazeGridWidth(Integer.parseInt(mazeGridWidthStr));
+    dto.setMazeSightWidth(Integer.parseInt(mazeSightWidth));
     dto.setMazeType(MazeType.valueOf(mazeTypeStr).getValue());
     if (configService.setInitConfig(dto)) {
       Main.setAppMazeGenState(false);
       Main.setAppMazeInitState(true);
       MazeMap.getInstance(dto);
-      closeWindow((Node) event.getSource());
+      FXUtil.closeWindow((Node) event.getSource());
     } else {
-      showErrorAlert("初期化に失敗しました");
+      FXUtil.showErrorAlert("初期化に失敗しました");
     }
   }
 
@@ -93,6 +103,7 @@ public class ConfigController extends BaseController implements Initializable {
     TFMazeWidth.setText(Integer.toString(dto.getMazeWidth()));
     TFMazeHeight.setText(Integer.toString(dto.getMazeHeight()));
     TFMazeGridWidth.setText(Integer.toString(dto.getMazeGridWidth()));
+    TFMazeSightWidth.setText(Integer.toString(dto.getMazeSightWidth()));
     // 画面の初期化
     GridPane.setHalignment(BInitMaze, HPos.RIGHT);
     GridPane.setHalignment(BInitMazeCancel, HPos.RIGHT);

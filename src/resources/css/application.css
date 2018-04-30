@@ -23,6 +23,7 @@
 .maze .button {
   -fx-min-width:0;
   -fx-pref-height:0;
+  -fx-effect:dropshadow(gaussian, #FFFFFF, 0, 0, 0, 0);
 }
 .button,.menu-button,.split-menu-button,.toggle-button,.number-button {
   -fx-background-insets: 0, 0, -1, 0;
@@ -205,9 +206,49 @@ VBox > .split-menu-button.last > .arrow-button {
 .split-menu-button:pressed > .label, .split-menu-button > .arrow-button:pressed {
   -fx-background-color: #e6e6e6;
   -fx-border-color: #acacac;
-  -fx-effect: innershadow(gaussian, #adadad, 10, 0, 0, 3);
+}
+  /*current*/
+ .button.current,.split-menu-button.current,.toggle-button.current,.menu-button.current,
+.split-menu-button.current > .label, .split-menu-button.current > .arrow-button {
+  -fx-background-color: #5cb85c;
 }
 
+.button.current,.menu-button.current,.toggle-button.current,
+.split-menu-button.current > .label,.split-menu-button.current > .arrow-button {
+  -fx-border-color: #FFA0D0;
+  -fx-text-fill: white;
+}
+.button.current:pressed{
+  -fx-background-color: #337ab7;
+}
+  /*unvisible*/
+ .button.unvisible,.split-menu-button.unvisible,.toggle-button.unvisible,.menu-button.unvisible,
+.split-menu-button.unvisible > .label, .split-menu-button.unvisible > .arrow-button {
+  -fx-background-color: #606060;
+}
+
+.button.unvisible,.menu-button.unvisible,.toggle-button.unvisible,
+.split-menu-button.unvisible > .label,.split-menu-button.unvisible > .arrow-button {
+  -fx-border-color: #2e6da4;
+  -fx-text-fill: white;
+}
+  /*visited*/
+ .button.visited,.split-menu-button.visited,.toggle-button.visited,.menu-button.visited,
+.split-menu-button.visited > .label, .split-menu-button.visited > .arrow-button {
+  -fx-background-color: #DFDFDF;
+}
+
+.button.visited,.menu-button.visited,.toggle-button.visited,
+.split-menu-button.visited > .label,.split-menu-button.visited > .arrow-button {
+  -fx-border-color: #5cb85c;
+  -fx-text-fill: black;
+}
+/*hover state*/
+.button.visited:hover,.menu-button.visited:hover,.toggle-button.visited:hover,
+.split-menu-button.visited > .label:hover, .split-menu-button.visited > .arrow-button:hover {
+  -fx-border-color: #204d74;
+  -fx-background-color: #286090;
+}
   /*primary*/
 
 .button.primary,.split-menu-button.primary,.toggle-button.primary,.menu-button.primary,

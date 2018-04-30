@@ -3,9 +3,11 @@ package application.service;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 
+import application.Utils.CommonUtil;
+import application.core.MazeGenerator;
 import application.core.MazePoint;
 
-public class RecursiveDivisionAlgorithmService extends MazeBaseAlgorithmService {
+public class RecursiveDivisionAlgorithmService extends MazeGenerator {
 
   public RecursiveDivisionAlgorithmService() {
     super();
@@ -81,8 +83,8 @@ public class RecursiveDivisionAlgorithmService extends MazeBaseAlgorithmService 
         return;
       }
       // 水平、垂直分割線の座標を決める 道を残すように、前回との座標の差は2の倍数にする
-      int divisionX = beginX + (getRandomInt((endX - beginX - 2) / 2) + 1) * 2;
-      int divisionY = beginY + (getRandomInt((endY - beginY - 2) / 2) + 1) * 2;
+      int divisionX = beginX + (CommonUtil.getRandomInt((endX - beginX - 2) / 2) + 1) * 2;
+      int divisionY = beginY + (CommonUtil.getRandomInt((endY - beginY - 2) / 2) + 1) * 2;
 
       int leftUpBeginX = beginX;
       int leftUpEndX = divisionX;
@@ -119,7 +121,7 @@ public class RecursiveDivisionAlgorithmService extends MazeBaseAlgorithmService 
         setToWall(divisionX, y);
       }
       //ランダムで壁分割線の四つ中の三つに道を作る
-      int randomInt = getRandomInt(wallLines.length);
+      int randomInt = CommonUtil.getRandomInt(wallLines.length);
       for (int i = 0; i < wallLines.length; i++) {
         if (i == randomInt) {
           continue;
@@ -127,9 +129,9 @@ public class RecursiveDivisionAlgorithmService extends MazeBaseAlgorithmService 
         // 後で生成された壁に道を塞がれないよう 壁候補となるマスは対象から外す
         setToRoad(
             wallLines[i][0] == wallLines[i][1] ? wallLines[i][0]
-                : wallLines[i][0] + getRandomInt((wallLines[i][1] - wallLines[i][0] - 1) / 2) * 2 + 1,
+                : wallLines[i][0] + CommonUtil.getRandomInt((wallLines[i][1] - wallLines[i][0] - 1) / 2) * 2 + 1,
             wallLines[i][2] == wallLines[i][3] ? wallLines[i][2]
-                : wallLines[i][2] + getRandomInt((wallLines[i][3] - wallLines[i][2] - 1) / 2) * 2 + 1);
+                : wallLines[i][2] + CommonUtil.getRandomInt((wallLines[i][3] - wallLines[i][2] - 1) / 2) * 2 + 1);
       }
 
       // 次へGO

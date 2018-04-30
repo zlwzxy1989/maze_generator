@@ -1,111 +1,34 @@
-package application.service;
+package application.core;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 
-import application.core.MazeMap;
-import application.core.MazePoint;
 import application.enumType.MazePointPosition;
 import application.enumType.MazePointType;
 
-public abstract class MazeBaseAlgorithmService {
-
+public abstract class MazeMapBase {
   protected MazePoint[][] mazePoints;
-  protected boolean showAnime = true;
-
   protected int maxWidth;
   protected int maxHeight;
 
-  public MazeBaseAlgorithmService() {
+  public MazeMapBase() {
 
   }
 
-  public MazeBaseAlgorithmService(MazePoint[][] mazePoints) {
+  public MazeMapBase(MazePoint[][] mazePoints) {
     this();
     setMazePoints(mazePoints);
+  }
+
+  public MazePoint[][] getMazePoints() {
+    return mazePoints;
   }
 
   public void setMazePoints(MazePoint[][] mazePoints) {
     this.mazePoints = mazePoints;
     maxWidth = mazePoints[0].length;
     maxHeight = mazePoints.length;
-  }
-
-  public abstract void generate(boolean showAnime);
-
-  //== set
-  // to road
-  protected void setToRoad(MazePoint mazePoint) {
-    System.out.println("set to road:" + mazePoint.getX() + "," + mazePoint.getY());
-    mazePoint.setType(MazePointType.ROAD);
-    if (showAnime) {
-      //Platform.runLater(() -> refreshUI(mazePoint));
-      refreshUI(mazePoint);
-    }
-  }
-
-  protected void setToRoad(int x, int y) {
-    if (isValidCoordinate(x, y)) {
-      setToRoad(getPointByCoordinate(x, y));
-    }
-  }
-
-  protected void setRowToRoad(int y) {
-    for (int x = 0; x < maxWidth; x++) {
-      setToRoad(x, y);
-    }
-  }
-
-  protected void setColToRoad(int x) {
-    for (int y = 0; y < maxHeight; y++) {
-      setToRoad(x, y);
-    }
-  }
-
-  protected void setAllToRoad() {
-    for (int i = mazePoints.length - 1; i >= 0; i--) {
-      for (int j = mazePoints[i].length - 1; j >= 0; j--) {
-        setToRoad(mazePoints[i][j]);
-      }
-    }
-  }
-
-  // to wall
-  protected void setToWall(MazePoint mazePoint) {
-    System.out.println("set to wall:" + mazePoint.getX() + "," + mazePoint.getY());
-    mazePoint.setType(MazePointType.WALL);
-    if (showAnime) {
-      //Platform.runLater(() -> refreshUI(mazePoint));
-      refreshUI(mazePoint);
-    }
-  }
-
-  protected void setToWall(int x, int y) {
-    if (isValidCoordinate(x, y)) {
-      setToWall(getPointByCoordinate(x, y));
-    }
-  }
-
-  protected void setColToWall(int x) {
-    for (int y = 0; y < maxHeight; y++) {
-      setToWall(x, y);
-    }
-  }
-
-  protected void setRowToWall(int y) {
-    for (int x = 0; x < maxWidth; x++) {
-      setToWall(x, y);
-    }
-  }
-
-  protected void setAllToWall() {
-    for (int i = mazePoints.length - 1; i >= 0; i--) {
-      for (int j = mazePoints[i].length - 1; j >= 0; j--) {
-        setToWall(mazePoints[i][j]);
-      }
-    }
   }
 
   //== get
@@ -169,6 +92,32 @@ public abstract class MazeBaseAlgorithmService {
     return true;
   }
 
+  protected boolean isRowRoad(int y, int beginX, int endX) {
+    for (int x = beginX; x <= endX; x++) {
+      if (!isRoad(x, y)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected boolean isRowRoad(int y) {
+    return isRowRoad(y, 0, maxWidth - 1);
+  }
+
+  protected boolean isColRoad(int x, int beginY, int endY) {
+    for (int y = beginY; y <= endY; y++) {
+      if (!isRoad(x, y)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected boolean isColRoad(int x) {
+    return isColRoad(x, 0, maxHeight - 1);
+  }
+
   protected boolean isWall(MazePoint mazePoint) {
     return mazePoint.getType().equals(MazePointType.WALL);
   }
@@ -187,6 +136,32 @@ public abstract class MazeBaseAlgorithmService {
       }
     }
     return true;
+  }
+
+  protected boolean isRowWall(int y, int beginX, int endX) {
+    for (int x = beginX; x <= endX; x++) {
+      if (!isWall(x, y)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected boolean isRowWall(int y) {
+    return isRowWall(y, 0, maxWidth - 1);
+  }
+
+  protected boolean isColWall(int x, int beginY, int endY) {
+    for (int y = beginY; y <= endY; y++) {
+      if (!isWall(x, y)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  protected boolean isColWall(int x) {
+    return isColWall(x, 0, maxHeight - 1);
   }
 
   protected Set<MazePoint> getNeighbourPoints(MazePoint mazePoint) {
@@ -238,20 +213,19 @@ public abstract class MazeBaseAlgorithmService {
     return MazePointPosition.OTHER;
   }
 
-  protected int getRandomInt(int max) {
-    if (max <= 0) {
-      return max;
+  // other
+  public String toText() {
+    String ret = "";
+    if (mazePoints == null) {
+      return ret;
     }
-    return new Random().nextInt(max);
-  }
+    for (int i = 0; i < mazePoints.length; i++) {
 
-  // UI
-  protected void refreshUI(MazePoint mazePoint) {
-    MazeMap.getInstance().refreshUI(mazePoint);
+      for (int j = 0; j < mazePoints[i].length; j++) {
+        ret += Integer.toString(mazePoints[i][j].getType().getValue());
+      }
+      ret += System.lineSeparator();
+    }
+    return ret;
   }
-
-  protected void refreshUI(int x, int y) {
-    refreshUI(getPointByCoordinate(x, y));
-  }
-
 }

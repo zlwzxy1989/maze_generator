@@ -17,6 +17,8 @@ public class MazePoint {
   private boolean visited = false;
   private boolean startPoint = false;
   private boolean endPoint = false;
+  private boolean visible = true;
+  private boolean cuurentPoint = false;
   private MazePointType type = MazePointType.WALL;
 
   public MazePoint(int x, int y, MazePointType type, boolean visited) {

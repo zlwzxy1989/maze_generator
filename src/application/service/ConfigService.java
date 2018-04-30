@@ -21,6 +21,8 @@ public class ConfigService {
 
   public static final int MAZE_GRID_WIDTH = 10;
 
+  public static final int MAZE_SIGHT_WIDTH = 0;
+
   private static MazeConfigDto dto = null;
 
   protected static MazeConfigDto getInitConfigFromFile() {
@@ -32,6 +34,7 @@ public class ConfigService {
       dto.setMazeHeight(Integer.parseInt(prop.getProperty("mazeHeight")));
       dto.setMazeType(Integer.parseInt(prop.getProperty("mazeType")));
       dto.setMazeGridWidth(Integer.parseInt(prop.getProperty("mazeGridWidth", Integer.toString(MAZE_GRID_WIDTH))));
+      dto.setMazeSightWidth(Integer.parseInt(prop.getProperty("mazeSightWidth", Integer.toString(MAZE_SIGHT_WIDTH))));
     } catch (IOException | NumberFormatException e) {
       System.out.println("初期設定の読込みに失敗しました");
     }
@@ -54,6 +57,7 @@ public class ConfigService {
     prop.setProperty("mazeHeight", Integer.toString(dto.getMazeHeight()));
     prop.setProperty("mazeType", Integer.toString(dto.getMazeType()));
     prop.setProperty("mazeGridWidth", Integer.toString(dto.getMazeGridWidth()));
+    prop.setProperty("mazeSightWidth", Integer.toString(dto.getMazeSightWidth()));
     try {
       prop.store(new FileOutputStream("application.properties"),
           "updated at " + LocalDateTime.now());
@@ -113,27 +117,50 @@ public class ConfigService {
     return "迷宮の幅は" + MAZE_MIN_HEIGHT + "から" + MAZE_MAX_HEIGHT + "までの値である必要があります";
   }
 
-  public boolean isValidGridWidth(String mazeGridWidthStr) {
+  public boolean isValidMazeGridWidth(String mazeGridWidthStr) {
     try {
       int mazeGridWidth = Integer.parseInt(mazeGridWidthStr);
-      return isValidGridWidth(mazeGridWidth);
+      return isValidMazeGridWidth(mazeGridWidth);
     } catch (NumberFormatException e) {
       return false;
     }
   }
 
-  public boolean isValidGridWidth(int mazeGridWidth) {
+  public boolean isValidMazeGridWidth(int mazeGridWidth) {
     if (mazeGridWidth > 0) {
       return true;
     }
     return false;
   }
 
-  public String checkGridWidth(String mazeGridWidthStr) {
-    if (isValidGridWidth(mazeGridWidthStr)) {
+  public String checkMazeGridWidth(String mazeGridWidthStr) {
+    if (isValidMazeGridWidth(mazeGridWidthStr)) {
       return "";
     }
-    return "マスの幅は0以上の値である必要があります";
+    return "マスの幅は0より大きい値である必要があります";
+  }
+
+  public boolean isValidMazeSightWidth(String mazeSightWidthStr) {
+    try {
+      int mazeSightWidth = Integer.parseInt(mazeSightWidthStr);
+      return isValidMazeSightWidth(mazeSightWidth);
+    } catch (NumberFormatException e) {
+      return false;
+    }
+  }
+
+  public boolean isValidMazeSightWidth(int mazeSightWidth) {
+    if (mazeSightWidth >= 0) {
+      return true;
+    }
+    return false;
+  }
+
+  public String checkMazeSightWidth(String mazeSightWidthStr) {
+    if (isValidMazeSightWidth(mazeSightWidthStr)) {
+      return "";
+    }
+    return "視界範囲は0以上の値である必要があります";
   }
 
 }
