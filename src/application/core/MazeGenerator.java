@@ -23,7 +23,7 @@ public abstract class MazeGenerator extends MazeMapBase {
     mazePoint.setType(MazePointType.ROAD);
     if (showAnime) {
       //Platform.runLater(() -> refreshUI(mazePoint));
-      refreshUI(mazePoint);
+      //refreshUI(mazePoint);
     }
   }
 
@@ -59,7 +59,7 @@ public abstract class MazeGenerator extends MazeMapBase {
     mazePoint.setType(MazePointType.WALL);
     if (showAnime) {
       //Platform.runLater(() -> refreshUI(mazePoint));
-      refreshUI(mazePoint);
+      //refreshUI(mazePoint);
     }
   }
 

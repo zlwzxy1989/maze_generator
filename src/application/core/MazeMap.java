@@ -5,7 +5,6 @@ import java.util.List;
 import application.Main;
 import application.Utils.FXUtil;
 import application.dto.MazeConfigDto;
-import javafx.application.Platform;
 
 public class MazeMap extends MazeMapBase {
 
@@ -23,6 +22,7 @@ public class MazeMap extends MazeMapBase {
 
   public void newGame() {
     resetPointsState();
+    refreshUI();
     // 起点を最初にクリックしたことにする
     lastVisitedPoint = null;
     started = true;
@@ -336,7 +336,7 @@ public class MazeMap extends MazeMapBase {
   }
 
   public void refreshUI(MazePoint point) {
-    Platform.runLater(() -> {
+    //Platform.runLater(() -> {
       int x = point.getX();
       int y = point.getY();
       System.out.println("refreshing UI:" + x + "," + y);
@@ -381,7 +381,7 @@ public class MazeMap extends MazeMapBase {
         styleList.add("danger");
       }
 
-    });
+    //});
 
   }
 
