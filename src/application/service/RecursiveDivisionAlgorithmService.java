@@ -51,6 +51,7 @@ public class RecursiveDivisionAlgorithmService extends MazeGenerator {
     ForkJoinPool pool = new ForkJoinPool();
     pool.invoke(new DivisionAction(mazePoints, initBeginX, initEndX, initBeginY, initEndY));
     // 最後に出口と隣接マス調整
+    setToRoad(startPoint);
     setToRoad(endPoint);
     if (maxHeight % 2 == 0) {
       setToRoad(endPoint.getX() - 1, endPoint.getY());

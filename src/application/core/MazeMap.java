@@ -90,7 +90,7 @@ public class MazeMap extends MazeMapBase {
   }
 
   private void resetPointsState(MazePoint p) {
-    p.setCuurentPoint(false);
+    p.setCurrentPoint(false);
     p.setVisited(false);
     if (conf.getMazeSightWidth() > 0 && !p.isStartPoint() && !p.isEndPoint()) {
       p.setVisible(false);
@@ -208,9 +208,9 @@ public class MazeMap extends MazeMapBase {
     }
     // 前の道に戻るなら他の計算は特に必要ない
     if (point.isVisited()) {
-      lastVisitedPoint.setCuurentPoint(false);
+      lastVisitedPoint.setCurrentPoint(false);
       refreshUI(lastVisitedPoint);
-      point.setCuurentPoint(true);
+      point.setCurrentPoint(true);
       refreshUI(point);
       lastVisitedPoint = point;
       return false;
@@ -300,11 +300,11 @@ public class MazeMap extends MazeMapBase {
           return false;
         }
       }
-      lastVisitedPoint.setCuurentPoint(false);
+      lastVisitedPoint.setCurrentPoint(false);
       refreshUI(lastVisitedPoint);
     }
     //指定マスの共通処理
-    point.setCuurentPoint(true);
+    point.setCurrentPoint(true);
     point.setVisited(true);
     setSight(point);
     refreshUI(point);
@@ -354,7 +354,7 @@ public class MazeMap extends MazeMapBase {
         styleList.add("warning");
         return;
       }
-      if (point.isCuurentPoint()) {
+      if (point.isCurrentPoint()) {
         ui.setDisable(false);
         styleList.add("current");
         return;
