@@ -6,24 +6,32 @@ public abstract class MazeGenerator extends MazeMapBase {
 
   protected boolean showAnime = true;
 
+  protected int animeDelay = 10;
+  protected int animeDelayAll = 0;
+
   public MazeGenerator() {
     super();
   }
 
-  public MazeGenerator(MazePoint[][] mazePoints) {
+  public MazeGenerator(MazePoint[][] mazePoints, boolean showAnime) {
     super(mazePoints);
+    animeDelay = showAnime ? 10 : 0;
+    animeDelayAll = showAnime ? 1 : 0;
   }
 
-  public abstract void generate(boolean showAnime);
+  public abstract void generate();
 
   //== set
   // to road
   protected void setToRoad(MazePoint mazePoint) {
+    setToRoad(mazePoint, animeDelay);
+  }
+
+  protected void setToRoad(MazePoint mazePoint, int animeDelay) {
     System.out.println("set to road:" + mazePoint.getX() + "," + mazePoint.getY());
     mazePoint.setType(MazePointType.ROAD);
     if (showAnime) {
-      //Platform.runLater(() -> refreshUI(mazePoint));
-      //refreshUI(mazePoint);
+      refreshUI(mazePoint, animeDelay);
     }
   }
 
@@ -34,32 +42,52 @@ public abstract class MazeGenerator extends MazeMapBase {
   }
 
   protected void setRowToRoad(int y) {
-    for (int x = 0; x < maxWidth; x++) {
+    setRowToRoad(y, 0, maxWidth - 1);
+  }
+
+  protected void setRowToRoad(int y, int beginX, int endX) {
+    for (int x = beginX; x <= endX; x++) {
       setToRoad(x, y);
     }
   }
 
   protected void setColToRoad(int x) {
-    for (int y = 0; y < maxHeight; y++) {
+    setColToRoad(x, 0, maxHeight - 1);
+  }
+
+  protected void setColToRoad(int x, int beginY, int endY) {
+    for (int y = beginY; y <= endY; y++) {
       setToRoad(x, y);
+    }
+  }
+
+  protected void setSlashToRoad(int leftX, int leftY, int rightX, int rightY) {
+    int iteratorY = Math.min(leftY, rightY) == leftY ? 1 : -1;
+    int y = leftY;
+    for (int x = leftX; x <= rightX; x++) {
+      setToRoad(x, y);
+      y = y + iteratorY;
     }
   }
 
   protected void setAllToRoad() {
     for (int i = mazePoints.length - 1; i >= 0; i--) {
       for (int j = mazePoints[i].length - 1; j >= 0; j--) {
-        setToRoad(mazePoints[i][j]);
+        setToRoad(mazePoints[i][j], animeDelayAll);
       }
     }
   }
 
   // to wall
   protected void setToWall(MazePoint mazePoint) {
+    setToWall(mazePoint, animeDelay);
+  }
+
+  protected void setToWall(MazePoint mazePoint, int animeDelay) {
     System.out.println("set to wall:" + mazePoint.getX() + "," + mazePoint.getY());
     mazePoint.setType(MazePointType.WALL);
     if (showAnime) {
-      //Platform.runLater(() -> refreshUI(mazePoint));
-      //refreshUI(mazePoint);
+      refreshUI(mazePoint, animeDelay);
     }
   }
 
@@ -70,32 +98,53 @@ public abstract class MazeGenerator extends MazeMapBase {
   }
 
   protected void setColToWall(int x) {
-    for (int y = 0; y < maxHeight; y++) {
+    setColToWall(x, 0, maxHeight - 1);
+  }
+
+  protected void setColToWall(int x, int beginY, int endY) {
+    for (int y = beginY; y <= endY; y++) {
       setToWall(x, y);
     }
   }
 
   protected void setRowToWall(int y) {
-    for (int x = 0; x < maxWidth; x++) {
+    setRowToWall(y, 0, maxWidth - 1);
+  }
+
+  protected void setRowToWall(int y, int beginX, int endX) {
+    for (int x = beginX; x <= endX; x++) {
       setToWall(x, y);
+    }
+  }
+
+  protected void setSlashToWall(int leftX, int leftY, int rightX, int rightY) {
+    int iteratorY = Math.min(leftY, rightY) == leftY ? 1 : -1;
+    int y = leftY;
+    for (int x = leftX; x <= rightX; x++) {
+      setToWall(x, y);
+      y = y + iteratorY;
     }
   }
 
   protected void setAllToWall() {
     for (int i = mazePoints.length - 1; i >= 0; i--) {
       for (int j = mazePoints[i].length - 1; j >= 0; j--) {
-        setToWall(mazePoints[i][j]);
+        setToWall(mazePoints[i][j], animeDelayAll);
       }
     }
   }
 
   // UI
   protected void refreshUI(MazePoint mazePoint) {
-    MazeMap.getInstance().refreshUI(mazePoint);
+    refreshUI(mazePoint, animeDelay);
+  }
+
+  protected void refreshUI(MazePoint mazePoint, int animeDelay) {
+    MazeMap.getInstance().refreshUI(mazePoint, animeDelay);
   }
 
   protected void refreshUI() {
-    MazeMap.getInstance().refreshUI();
+    MazeMap.getInstance().refreshUI(animeDelayAll);
   }
 
   protected void refreshUI(int x, int y) {

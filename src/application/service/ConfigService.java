@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Properties;
 
 import application.dto.MazeConfigDto;
+import application.enumType.MazeType;
 
 public class ConfigService {
 
@@ -32,10 +33,11 @@ public class ConfigService {
       prop.load(in);
       dto.setMazeWidth(Integer.parseInt(prop.getProperty("mazeWidth")));
       dto.setMazeHeight(Integer.parseInt(prop.getProperty("mazeHeight")));
-      dto.setMazeType(Integer.parseInt(prop.getProperty("mazeType")));
+      dto.setMazeType(MazeType.getByValue(Integer.parseInt(prop.getProperty("mazeType"))));
       dto.setMazeGridWidth(Integer.parseInt(prop.getProperty("mazeGridWidth", Integer.toString(MAZE_GRID_WIDTH))));
       dto.setMazeSightWidth(Integer.parseInt(prop.getProperty("mazeSightWidth", Integer.toString(MAZE_SIGHT_WIDTH))));
       dto.setMazeSightIgnoreWall(Boolean.parseBoolean(prop.getProperty("mazeSightIgnoreWall", "true")));
+      dto.setShowAnime(Boolean.parseBoolean(prop.getProperty("showAnime", "true")));
     } catch (IOException | NumberFormatException e) {
       System.out.println("初期設定の読込みに失敗しました");
     }
@@ -56,10 +58,11 @@ public class ConfigService {
     Properties prop = new Properties();
     prop.setProperty("mazeWidth", Integer.toString(dto.getMazeWidth()));
     prop.setProperty("mazeHeight", Integer.toString(dto.getMazeHeight()));
-    prop.setProperty("mazeType", Integer.toString(dto.getMazeType()));
+    prop.setProperty("mazeType", Integer.toString(dto.getMazeType().getValue()));
     prop.setProperty("mazeGridWidth", Integer.toString(dto.getMazeGridWidth()));
     prop.setProperty("mazeSightWidth", Integer.toString(dto.getMazeSightWidth()));
     prop.setProperty("mazeSightIgnoreWall", Boolean.toString(dto.isMazeSightIgnoreWall()));
+    prop.setProperty("showAnime", Boolean.toString(dto.isShowAnime()));
     try {
       prop.store(new FileOutputStream("application.properties"),
           "updated at " + LocalDateTime.now());

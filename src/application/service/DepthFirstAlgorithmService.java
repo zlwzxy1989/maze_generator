@@ -14,12 +14,12 @@ public class DepthFirstAlgorithmService extends MazeGenerator {
     super();
   }
 
-  public DepthFirstAlgorithmService(MazePoint[][] mazePoints) {
-    super(mazePoints);
+  public DepthFirstAlgorithmService(MazePoint[][] mazePoints, boolean showAnime) {
+    super(mazePoints, showAnime);
   }
 
   @Override
-  public void generate(boolean showAnime) {
+  public void generate() {
     if (mazePoints == null) {
       return;
     }
@@ -28,8 +28,6 @@ public class DepthFirstAlgorithmService extends MazeGenerator {
     if (startPoint == null || endPoint == null) {
       return;
     }
-    this.showAnime = showAnime;
-
     // 探索起点となるマス 中身が空になったら終了
     List<MazePoint> buffer = new ArrayList<>();
 
@@ -42,7 +40,8 @@ public class DepthFirstAlgorithmService extends MazeGenerator {
     int widthFix = (maxWidth + 1) % 2;
     int heightFix = (maxHeight + 1) % 2;
     buffer.add(
-        getPointByCoordinate(CommonUtil.getRandomInt(maxWidth / 2) * 2 + widthFix, CommonUtil.getRandomInt(maxHeight / 2) * 2 + heightFix));
+        getPointByCoordinate(CommonUtil.getRandomInt(maxWidth / 2) * 2 + widthFix,
+            CommonUtil.getRandomInt(maxHeight / 2) * 2 + heightFix));
     while (!buffer.isEmpty()) {
       // 深さ優先なので、最後に追加した候補を使う
       MazePoint currentPoint = buffer.get(buffer.size() - 1);

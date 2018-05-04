@@ -32,4 +32,14 @@ public class MazePoint {
 
   }
 
+  public MazePoint(MazePoint p) {
+    this.x = p.x;
+    this.y = p.y;
+    this.type = p.type;
+    this.visited = p.visited;
+    this.startPoint = p.startPoint;
+    this.endPoint = p.endPoint;
+    this.visible = p.visible;
+    this.currentPoint = p.currentPoint;
+  }
 }

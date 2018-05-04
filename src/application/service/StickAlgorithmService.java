@@ -15,12 +15,12 @@ public class StickAlgorithmService extends MazeGenerator {
     super();
   }
 
-  public StickAlgorithmService(MazePoint[][] mazePoints) {
-    super(mazePoints);
+  public StickAlgorithmService(MazePoint[][] mazePoints, boolean showAnime) {
+    super(mazePoints, showAnime);
   }
 
   @Override
-  public void generate(boolean showAnime) {
+  public void generate() {
     if (mazePoints == null) {
       return;
     }
@@ -29,7 +29,6 @@ public class StickAlgorithmService extends MazeGenerator {
     if (startPoint == null || endPoint == null) {
       return;
     }
-    this.showAnime = showAnime;
     // 全部道にする
     setAllToRoad();
     // 2行目から1マス間隔で棒を作っていく

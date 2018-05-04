@@ -11,7 +11,6 @@ import application.core.MazeButton;
 import application.core.MazeGenerator;
 import application.core.MazeMap;
 import application.dto.MazeConfigDto;
-import application.enumType.MazeType;
 import application.service.ConfigService;
 import application.service.DepthFirstAlgorithmService;
 import application.service.RecursiveDivisionAlgorithmService;
@@ -30,28 +29,31 @@ public class MainController extends BaseController {
   public void MIGenerateMazeAction(ActionEvent event) {
     System.out.println("generating...");
     if (!Main.getAppMazeInitState()) {
-      FXUtil.showErrorAlert("メニューから迷宮の初期化を行ってください");
+      FXUtil.showErrorAlert(FXUtil.getLocaleText("ErrBeforeInit"));
       return;
     }
     MazeConfigDto dto = ConfigService.getInitConfig();
     MazeGenerator service;
 
     MazeMap mazeMap = MazeMap.getInstance();
-    switch (MazeType.getByValue(dto.getMazeType())) {
+    if (dto.isShowAnime()) {
+      mazeMap.resetPointsStateForGenerator();
+    }
+    switch (dto.getMazeType()) {
     default:
-    case 棒倒し法:
-      service = new StickAlgorithmService(mazeMap.getMazePoints());
+    case STICK:
+      service = new StickAlgorithmService(mazeMap.getMazePoints(), dto.isShowAnime());
       break;
-    case 穴掘り法:
-      service = new DepthFirstAlgorithmService(mazeMap.getMazePoints());
+    case DEPTH_FIRST:
+      service = new DepthFirstAlgorithmService(mazeMap.getMazePoints(), dto.isShowAnime());
       break;
-    case 再帰分割法:
-      service = new RecursiveDivisionAlgorithmService(mazeMap.getMazePoints());
+    case RECURSIVE_DIVISION:
+      service = new RecursiveDivisionAlgorithmService(mazeMap.getMazePoints(), dto.isShowAnime());
       break;
     }
-    service.generate(dto.isShowAnime());
+    service.generate();
     Main.setAppMazeGenState(true);
-    mazeMap.newGame();
+    FXUtil.run(() -> mazeMap.newGame(), 0);
     //FXUtil.showInfoAlert("迷宮生成が完了しました");
   }
 
@@ -72,16 +74,27 @@ public class MainController extends BaseController {
       loader.setLocation(Main.class.getResource("view/Config.fxml"));
       GridPane initPage = (GridPane) loader.load();
       Stage dialogStage = new Stage();
-      dialogStage.setTitle("迷宮の初期化");
+      dialogStage.setTitle(FXUtil.getLocaleText("ConfigTitle"));
       dialogStage.initModality(Modality.WINDOW_MODAL);
       Scene scene = new Scene(initPage);
       dialogStage.setScene(scene);
       dialogStage.setResizable(false);
-      Main.setOwnerOf(dialogStage);
+      Stage primaryStage = Main.getPrimaryStage();
+      dialogStage.initOwner(primaryStage);
       setInitMazeStage(dialogStage);
 
-      dialogStage.show();
+      // parentWindow.setCenter(childStage)欲しい...
+      double parentCenterX = primaryStage.getX() + primaryStage.getWidth() / 2d;
+      double parentCenterY = primaryStage.getY() + primaryStage.getHeight() / 2d;
 
+      dialogStage.setOnShowing(ev -> dialogStage.hide());
+
+      dialogStage.setOnShown(ev -> {
+        dialogStage.setX(parentCenterX - dialogStage.getWidth() / 2d);
+        dialogStage.setY(parentCenterY - dialogStage.getHeight() / 2d);
+        dialogStage.show();
+      });
+      dialogStage.showAndWait();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -89,7 +102,7 @@ public class MainController extends BaseController {
 
   public void MISaveMazeAction(ActionEvent event) {
     if (!Main.getAppMazeGenState()) {
-      FXUtil.showErrorAlert("メニューから迷宮の生成を行ってください");
+      FXUtil.showErrorAlert(FXUtil.getLocaleText("ErrBeforeInit"));
       return;
 
     }
@@ -109,16 +122,16 @@ public class MainController extends BaseController {
     try (BufferedWriter w = Files.newBufferedWriter(saveMazeFile.toPath())) {
       w.write(mazeStr);
       w.flush();
-      FXUtil.showInfoAlert("迷宮ファイルを出力しました");
+      FXUtil.showInfoAlert(FXUtil.getLocaleText("InfoMazeSaved"));
     } catch (IOException e) {
-      FXUtil.showErrorAlert("迷宮ファイルの出力に失敗しました");
+      FXUtil.showErrorAlert(FXUtil.getLocaleText("ErrSavingMaze"));
       e.printStackTrace();
     }
   }
 
   public void MIClearSightAction(ActionEvent event) {
     if (!Main.getAppMazeGenState()) {
-      FXUtil.showErrorAlert("メニューから迷宮の生成を行ってください");
+      FXUtil.showErrorAlert(FXUtil.getLocaleText("ErrBeforeInit"));
       return;
     }
     MazeMap.getInstance().setAllVisible();

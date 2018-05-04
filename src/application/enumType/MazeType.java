@@ -1,8 +1,10 @@
 package application.enumType;
 
+import application.Utils.FXUtil;
+
 public enum MazeType {
 
-  穴掘り法(0), 棒倒し法(1), 再帰分割法(2);
+  DEPTH_FIRST(0), STICK(1), RECURSIVE_DIVISION(2);
   private int value;
 
   private MazeType(int v) {
@@ -11,6 +13,11 @@ public enum MazeType {
 
   public int getValue() {
     return value;
+  }
+
+  @Override
+  public String toString() {
+    return FXUtil.getLocaleText("MazeType_" + getValue());
   }
 
   public static MazeType getByValue(int value) {

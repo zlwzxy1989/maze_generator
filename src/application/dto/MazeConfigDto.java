@@ -1,5 +1,6 @@
 package application.dto;
 
+import application.enumType.MazeType;
 import application.service.ConfigService;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ public class MazeConfigDto {
 
   private int mazeHeight = ConfigService.MAZE_DEFAULT_HEIGHT;
   private int mazeWidth = ConfigService.MAZE_DEFAULT_WIDTH;
-  private int mazeType;
+  private MazeType mazeType = MazeType.DEPTH_FIRST;
   private boolean showAnime = true;
   // マス幅
   private int mazeGridWidth = ConfigService.MAZE_GRID_WIDTH;

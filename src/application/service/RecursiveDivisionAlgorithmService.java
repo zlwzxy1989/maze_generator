@@ -13,12 +13,12 @@ public class RecursiveDivisionAlgorithmService extends MazeGenerator {
     super();
   }
 
-  public RecursiveDivisionAlgorithmService(MazePoint[][] mazePoints) {
-    super(mazePoints);
+  public RecursiveDivisionAlgorithmService(MazePoint[][] mazePoints, boolean showAnime) {
+    super(mazePoints, showAnime);
   }
 
   @Override
-  public void generate(boolean showAnime) {
+  public void generate() {
     if (mazePoints == null) {
       return;
     }
@@ -27,7 +27,6 @@ public class RecursiveDivisionAlgorithmService extends MazeGenerator {
     if (startPoint == null || endPoint == null) {
       return;
     }
-    this.showAnime = showAnime;
     // 道からスタート
     setAllToRoad();
     // マップを壁に包まれる状態でスタート
@@ -145,10 +144,10 @@ public class RecursiveDivisionAlgorithmService extends MazeGenerator {
       DivisionAction rightDown = new DivisionAction(mazePoints, rightDownBeginX, rightDownEndX, rightDownBeginY,
           rightDownEndY);
 
-      leftUp.fork();
-      leftDown.fork();
-      rightUp.fork();
-      rightDown.fork();
+      leftUp.invoke();
+      leftDown.invoke();
+      rightUp.invoke();
+      rightDown.invoke();
     }
 
   }
