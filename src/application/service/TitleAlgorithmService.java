@@ -89,8 +89,8 @@ public class TitleAlgorithmService extends MazeGenerator {
 
       setColToRoad(10,6,16);
       setColToRoad(24,6,16);
-      setColToRoad(14,7,9);
-      setColToRoad(20,7,9);
+      //setColToRoad(14,7,9);
+      //setColToRoad(20,7,9);
 
       setRowToRoad(10,4,7);
       setRowToRoad(11,5,7);
@@ -104,9 +104,9 @@ public class TitleAlgorithmService extends MazeGenerator {
       setColToRoad(31,11,12);
       setColToRoad(32,13,14);
 
-      setToRoad(15,11);
-      setToRoad(19,11);
-      setRowToRoad(12,16,18);
+      //setToRoad(15,11);
+      //setToRoad(19,11);
+      //setRowToRoad(12,16,18);
 
       setSlashToRoad(9,11,16,18);
       setSlashToRoad(19,17,25,11);
