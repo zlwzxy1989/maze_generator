@@ -467,11 +467,12 @@ public class MazeMap extends MazeMapBase {
   }
 
   public void showTitleMaze() {
-    int titleType = CommonUtil.getRandomInt(4);
+    int titleType = CommonUtil.getRandomInt(10);
+    System.out.println("title type:" + titleType);
     MazeConfigDto titleConf = new MazeConfigDto();
     titleConf.setShowAnime(false);
     String[] route;
-    if (titleType == 0) {
+    if (titleType <= 6) {
       //maze文字
       titleConf.setMazeWidth(27);
       titleConf.setMazeHeight(29);
@@ -518,9 +519,9 @@ public class MazeMap extends MazeMapBase {
           "5,10","6,10","7,10","5,11","6,11","7,11","5,12","6,12","7,12","8,13","7,14","7,15","6,16","6,17","3,15","3,16","3,17","3,18","3,19","4,20","5,21",
           "27,10","28,10","29,10","27,11","28,11","29,11","27,12","28,12","29,12","26,13","27,14","27,15","28,16","28,17","31,15","31,16","31,17","31,18","31,19","30,20","29,21"
           };
-      if (titleType == 1) {
+      if (titleType == 7) {
         route2 = new String[] {"14,7","14,8","14,9","20,7","20,8","20,9","15,11","16,12","17,12","18,12","19,11"};
-      }else if (titleType == 2) {
+      }else if (titleType == 8) {
         route2 = new String[] {"13,7","14,8","15,9","14,10","13,11","21,7","20,8","19,9","20,10","21,11","17,12"};
       } else {
         route2 = new String[] {"14,9","15,9","14,10","20,9","21,9","20,10"};
