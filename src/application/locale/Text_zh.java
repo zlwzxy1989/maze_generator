@@ -31,6 +31,7 @@ public class Text_zh extends ListResourceBundle {
         { "MazeType_1", "倒杆法" },
         { "MazeType_2", "递归分割法" },
         { "LShowAnime", "动画效果" },
+        { "LNightMode", "夜晚模式" },
         { "BInitMazeCancel", "取消" },
         { "BInitMaze", "确定" },
 

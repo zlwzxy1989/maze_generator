@@ -53,6 +53,7 @@ public class MainController extends BaseController {
     }
     service.generate();
     Main.setAppMazeGenState(true);
+    Main.setAppUnlimitedSightState(false);
     FXUtil.run(() -> mazeMap.newGame(), 0);
     //FXUtil.showInfoAlert("迷宮生成が完了しました");
   }
@@ -135,6 +136,7 @@ public class MainController extends BaseController {
       return;
     }
     MazeMap.getInstance().setAllVisible();
+    Main.setAppUnlimitedSightState(true);
   }
 
   public void BPMazeMoveAction(KeyEvent event) {

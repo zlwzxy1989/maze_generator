@@ -30,6 +30,7 @@ public class Text extends ListResourceBundle {
         { "MazeType_1", "棒倒し法" },
         { "MazeType_2", "再帰分割法" },
         { "LShowAnime", "アニメ効果" },
+        { "LNightMode", "夜モード" },
         { "BInitMazeCancel", "取消" },
         { "BInitMaze", "確定" },
 

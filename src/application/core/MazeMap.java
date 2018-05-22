@@ -159,34 +159,35 @@ public class MazeMap extends MazeMapBase {
     refreshUI();
   }
 
-  // 指定マスを中心に視界内のマスを可視にする
+  // 指定マスを中心に視界内のマスの可視性を処理する
   protected void setSight(MazePoint point) {
-    if (!conf.isSightMode()) {
+    if (!conf.isSightMode() || Main.getAppUnlimitedSightState()) {
       return;
     }
-    // 壁による視界遮断は考慮しない
+    // 視野制限&夜モードはマスの可視性をリセットする操作も考慮
+    boolean targetVisible = conf.isNightMode() ? point.isCurrentPoint() : true;
     int currentX = point.getX();
     int currentY = point.getY();
     int sight = conf.getMazeSightWidth();
-    // 壁を無視なら視界内のマスは全部表示
+    // 壁を無視なら視界内のマスは全部処理
     if (conf.isMazeSightIgnoreWall()) {
       for (int i = 0; i <= sight; i++) {
-        for (int x = currentX - i; x <= currentX + i; x++) {
-          for (int y = currentY - (sight - i); y <= currentY + (sight - i); y++) {
-            MazePoint p = getPointByCoordinate(getSafeX(x), getSafeY(y));
-            if (!p.isVisible()) {
-              p.setVisible(true);
+        for (int x = getSafeX(currentX - i); x <= getSafeX(currentX + i); x++) {
+          for (int y = getSafeY(currentY - (sight - i)); y <= getSafeY(currentY + (sight - i)); y++) {
+            MazePoint p = getPointByCoordinate(x, y);
+            if (p.isVisible() != targetVisible) {
+              p.setVisible(targetVisible);
               refreshUI(p);
             }
           }
         }
       }
     } else {
-      // 四方向しか表示しない、且つ壁に当たると壁だけ表示して終了
-      for (int x = 1; x <= sight; x++) {
+      // 四方向しか処理しない、且つ壁に当たると壁だけ処理して終了
+      for (int x = 0; x <= sight; x++) {
         MazePoint p = getPointByCoordinate(getSafeX(currentX + x), currentY);
-        if (!p.isVisible()) {
-          p.setVisible(true);
+        if (p.isVisible() != targetVisible) {
+          p.setVisible(targetVisible);
           refreshUI(p);
         }
         if (isWall(p)) {
@@ -195,8 +196,8 @@ public class MazeMap extends MazeMapBase {
       }
       for (int x = 1; x <= sight; x++) {
         MazePoint p = getPointByCoordinate(getSafeX(currentX - x), currentY);
-        if (!p.isVisible()) {
-          p.setVisible(true);
+        if (p.isVisible() != targetVisible) {
+          p.setVisible(targetVisible);
           refreshUI(p);
         }
         if (isWall(p)) {
@@ -205,8 +206,8 @@ public class MazeMap extends MazeMapBase {
       }
       for (int y = 1; y <= sight; y++) {
         MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY + y));
-        if (!p.isVisible()) {
-          p.setVisible(true);
+        if (p.isVisible() != targetVisible) {
+          p.setVisible(targetVisible);
           refreshUI(p);
         }
         if (isWall(p)) {
@@ -215,8 +216,8 @@ public class MazeMap extends MazeMapBase {
       }
       for (int y = 1; y <= sight; y++) {
         MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY - y));
-        if (!p.isVisible()) {
-          p.setVisible(true);
+        if (p.isVisible() != targetVisible) {
+          p.setVisible(targetVisible);
           refreshUI(p);
         }
         if (isWall(p)) {
@@ -241,11 +242,7 @@ public class MazeMap extends MazeMapBase {
     }
     // 前の道に戻るなら他の計算は特に必要ない
     if (point.isVisited()) {
-      lastVisitedPoint.setCurrentPoint(false);
-      refreshUI(lastVisitedPoint);
-      point.setCurrentPoint(true);
-      refreshUI(point);
-      lastVisitedPoint = point;
+      walkToPoint(point);
       return false;
     }
 
@@ -264,11 +261,7 @@ public class MazeMap extends MazeMapBase {
           return false;
         }
         for (int y = minY; y <= maxY; y++) {
-          MazePoint p = getPointByCoordinate(point.getX(), y);
-          p.setVisited(true);
-          p.setCurrentPoint(false);
-          setSight(p);
-          refreshUI(p, animeDelay);
+          walkToPoint(getPointByCoordinate(point.getX(), y));
         }
 
       }
@@ -280,11 +273,7 @@ public class MazeMap extends MazeMapBase {
           return false;
         }
         for (int x = minX; x <= maxX; x++) {
-          MazePoint p = getPointByCoordinate(x, point.getY());
-          p.setVisited(true);
-          p.setCurrentPoint(false);
-          setSight(p);
-          refreshUI(p, animeDelay);
+          walkToPoint(getPointByCoordinate(x, point.getY()));
         }
 
       } else {
@@ -319,38 +308,37 @@ public class MazeMap extends MazeMapBase {
         }
         if (hasRoad) {
           for (int y = minY; y <= maxY; y++) {
-            MazePoint p = getPointByCoordinate(roadX, y);
-            p.setVisited(true);
-            p.setCurrentPoint(false);
-            setSight(p);
-            refreshUI(p, animeDelay);
+            walkToPoint(getPointByCoordinate(roadX, y));
           }
           for (int x = minX; x <= maxX; x++) {
-            MazePoint p = getPointByCoordinate(x, roadY);
-            p.setVisited(true);
-            p.setCurrentPoint(false);
-            setSight(p);
-            refreshUI(p, animeDelay);
+            walkToPoint(getPointByCoordinate(x, roadY));
           }
         } else {
           showUnclickable(point);
           return false;
         }
       }
-      lastVisitedPoint.setCurrentPoint(false);
-      refreshUI(lastVisitedPoint);
     }
     //指定マスの共通処理
-    point.setCurrentPoint(true);
-    point.setVisited(true);
-    setSight(point);
-    refreshUI(point, animeDelay);
-    lastVisitedPoint = point;
+    walkToPoint(point);
     // 終点に着いたならtrue
     if (point.equals(getEndPoint())) {
       return true;
     }
     return false;
+  }
+
+  private void walkToPoint(MazePoint point) {
+    if (lastVisitedPoint != null) {
+      lastVisitedPoint.setCurrentPoint(false);
+      setSight(lastVisitedPoint);
+      refreshUI(lastVisitedPoint);
+    }
+    point.setVisited(true);
+    point.setCurrentPoint(true);
+    setSight(point);
+    refreshUI(point);
+    lastVisitedPoint = point;
   }
 
   public void setAllVisible() {
@@ -429,11 +417,14 @@ public class MazeMap extends MazeMapBase {
     if (p.isVisited()) {
       ui.setDisable(false);
       styleList.add("visited");
+      return;
     }
     if (isRoad(p)) {
       ui.setDisable(false);
       //styleList.add("success");
-    } else if (isWall(p)) {
+      return;
+    }
+    if (isWall(p)) {
       ui.setDisable(true);
       styleList.add("danger");
     }
@@ -476,26 +467,30 @@ public class MazeMap extends MazeMapBase {
       //maze文字
       titleConf.setMazeWidth(27);
       titleConf.setMazeHeight(29);
-      route = new String[]{
+      route = new String[] {
           //M
-          "1,12", "1,11", "1,10", "1,9", "1,8", "1,7", "1,6", "1,5", "1,4", "1,3", "1,2","1,1", "2,2", "2,3", "3,3", "3,4", "4,4", "4,5",
-          "5,5", "5,6", "6,6","6,7",
-          "7,6", "7,5", "8,5", "8,4", "9,4", "9,3", "10,3","10,2","11,2","11,1", "11,3", "11,4", "11,5", "11,6", "11,7", "11,8", "11,9",
+          "1,12", "1,11", "1,10", "1,9", "1,8", "1,7", "1,6", "1,5", "1,4", "1,3", "1,2", "1,1", "2,2", "2,3", "3,3",
+          "3,4", "4,4", "4,5",
+          "5,5", "5,6", "6,6", "6,7",
+          "7,6", "7,5", "8,5", "8,4", "9,4", "9,3", "10,3", "10,2", "11,2", "11,1", "11,3", "11,4", "11,5", "11,6",
+          "11,7", "11,8", "11,9",
           "11,10", "11,11", "11,12"
           //A
-          ,"15,12","15,11","15,10","15,9","15,8","15,7","15,6","16,6","16,5","17,5","17,4","18,4","18,3","19,3",
-          "19,2","20,2","20,1","21,2","21,3","22,3","22,4","23,4","23,5","24,5","24,6","25,6","25,7","25,8","25,9","25,10"
-          ,"25,11","25,12"
-          ,"16,7","17,7","18,7","19,7","20,7","21,7","22,7","23,7","24,7"
+          , "15,12", "15,11", "15,10", "15,9", "15,8", "15,7", "15,6", "16,6", "16,5", "17,5", "17,4", "18,4", "18,3",
+          "19,3",
+          "19,2", "20,2", "20,1", "21,2", "21,3", "22,3", "22,4", "23,4", "23,5", "24,5", "24,6", "25,6", "25,7",
+          "25,8", "25,9", "25,10", "25,11", "25,12", "16,7", "17,7", "18,7", "19,7", "20,7", "21,7", "22,7", "23,7",
+          "24,7"
           //Z
-          ,"1,16","2,16","3,16","4,16","5,16","6,16","7,16","8,16","9,16","10,16","11,16","11,17","10,17","10,18","9,18"
-          ,"9,19","8,19","8,20","7,20","7,21","6,21","6,22","5,22","5,23","4,23","4,24","3,24","3,25","2,25","2,26","1,26",
-          "1,27","2,27","3,27","4,27","5,27","6,27","7,27","8,27","9,27","10,27","11,27"
+          , "1,16", "2,16", "3,16", "4,16", "5,16", "6,16", "7,16", "8,16", "9,16", "10,16", "11,16", "11,17", "10,17",
+          "10,18", "9,18", "9,19", "8,19", "8,20", "7,20", "7,21", "6,21", "6,22", "5,22", "5,23", "4,23", "4,24",
+          "3,24", "3,25", "2,25", "2,26", "1,26",
+          "1,27", "2,27", "3,27", "4,27", "5,27", "6,27", "7,27", "8,27", "9,27", "10,27", "11,27"
           //E
-          ,"25,16","24,16","23,16","22,16","21,16","20,16","19,16","18,16","17,16","16,16"
-          ,"15,16","15,17","15,18","15,19","15,20","15,21","15,22","15,23","15,24","15,25","15,26","15,27",
-          "16,27","17,27","18,27","19,27","20,27","21,27","22,27","23,27","24,27","25,27",
-          "16,21","17,21","18,21","19,21","20,21","21,21","22,21","23,21","24,21","25,21"
+          , "25,16", "24,16", "23,16", "22,16", "21,16", "20,16", "19,16", "18,16", "17,16", "16,16", "15,16", "15,17",
+          "15,18", "15,19", "15,20", "15,21", "15,22", "15,23", "15,24", "15,25", "15,26", "15,27",
+          "16,27", "17,27", "18,27", "19,27", "20,27", "21,27", "22,27", "23,27", "24,27", "25,27",
+          "16,21", "17,21", "18,21", "19,21", "20,21", "21,21", "22,21", "23,21", "24,21", "25,21", "26,28"
       };
     } else {
       //ドット絵
@@ -503,28 +498,42 @@ public class MazeMap extends MazeMapBase {
       titleConf.setMazeHeight(25);
       String[] route1;
       String[] route2;
-      route1 = new String[]{
-          "10,13","10,14","10,15","10,16","9,17","8,18","7,18","7,19","8,20","9,21",
-          "8,22","7,22","6,22","5,22","4,22","3,21","2,20","1,19","1,18","1,17","1,16","1,15","2,14","2,13","3,12","3,11",
-          "4,10","4,9","5,8","6,7","6,6","6,5","7,5","8,5","7,4","8,3","9,2","10,1","11,1","12,2","13,3","14,3","15,2","16,2","17,2",
-          "18,2","19,2","20,3","21,3","22,2","23,1","24,1","25,2","26,3","27,4","27,5","26,5","28,5","28,6","28,7","29,8","30,9",
-          "30,10","31,11","31,12","32,13","32,14","33,15","33,16","33,17","33,18","33,19","32,20","31,21","30,22","29,22",
-          "28,22","27,22","26,22","25,21","26,20","27,19","27,18","26,18","25,17","24,16","24,15","24,14","24,13","23,13",
-          "22,14","21,15","20,16","21,17","22,18","22,19","21,19","21,20","20,20","20,19","20,18","19,20","19,19","19,18",
-          "19,17","18,20","18,21","18,22","18,23","17,20","16,20","16,21","16,22","16,23","15,20","15,19","15,18","16,18","16,17","15,17",
-          "14,20","14,19","14,18","13,20","13,19","12,19","12,18","13,17","14,16","13,15","12,14","11,13","11,12","10,12","9,12","9,11","10,11","10,10",
-          "10,9","10,8","9,8","8,9","10,7","10,6","9,6","11,6","11,5","12,4","13,5","14,5","15,5","16,5","17,5","18,5","19,5","20,5","21,5",
-          "22,4","23,5","23,6","24,6","25,6","24,7","24,8","25,8","26,9","24,9","24,10","24,11","25,11","25,12","24,12","23,12",
-          "14,14","15,14","15,15","16,15","17,16","18,15","19,15","19,14","20,14",
-          "5,10","6,10","7,10","5,11","6,11","7,11","5,12","6,12","7,12","8,13","7,14","7,15","6,16","6,17","3,15","3,16","3,17","3,18","3,19","4,20","5,21",
-          "27,10","28,10","29,10","27,11","28,11","29,11","27,12","28,12","29,12","26,13","27,14","27,15","28,16","28,17","31,15","31,16","31,17","31,18","31,19","30,20","29,21"
-          };
+      route1 = new String[] {
+          "10,13", "10,14", "10,15", "10,16", "9,17", "8,18", "7,18", "7,19", "8,20", "9,21",
+          "8,22", "7,22", "6,22", "5,22", "4,22", "3,21", "2,20", "1,19", "1,18", "1,17", "1,16", "1,15", "2,14",
+          "2,13", "3,12", "3,11",
+          "4,10", "4,9", "5,8", "6,7", "6,6", "6,5", "7,5", "8,5", "7,4", "8,3", "9,2", "10,1", "11,1", "12,2", "13,3",
+          "14,3", "15,2", "16,2", "17,2",
+          "18,2", "19,2", "20,3", "21,3", "22,2", "23,1", "24,1", "25,2", "26,3", "27,4", "27,5", "26,5", "28,5",
+          "28,6", "28,7", "29,8", "30,9",
+          "30,10", "31,11", "31,12", "32,13", "32,14", "33,15", "33,16", "33,17", "33,18", "33,19", "32,20", "31,21",
+          "30,22", "29,22",
+          "28,22", "27,22", "26,22", "25,21", "26,20", "27,19", "27,18", "26,18", "25,17", "24,16", "24,15", "24,14",
+          "24,13", "23,13",
+          "22,14", "21,15", "20,16", "21,17", "22,18", "22,19", "21,19", "21,20", "20,20", "20,19", "20,18", "19,20",
+          "19,19", "19,18",
+          "19,17", "18,20", "18,21", "18,22", "18,23", "17,20", "16,20", "16,21", "16,22", "16,23", "15,20", "15,19",
+          "15,18", "16,18", "16,17", "15,17",
+          "14,20", "14,19", "14,18", "13,20", "13,19", "12,19", "12,18", "13,17", "14,16", "13,15", "12,14", "11,13",
+          "11,12", "10,12", "9,12", "9,11", "10,11", "10,10",
+          "10,9", "10,8", "9,8", "8,9", "10,7", "10,6", "9,6", "11,6", "11,5", "12,4", "13,5", "14,5", "15,5", "16,5",
+          "17,5", "18,5", "19,5", "20,5", "21,5",
+          "22,4", "23,5", "23,6", "24,6", "25,6", "24,7", "24,8", "25,8", "26,9", "24,9", "24,10", "24,11", "25,11",
+          "25,12", "24,12", "23,12",
+          "14,14", "15,14", "15,15", "16,15", "17,16", "18,15", "19,15", "19,14", "20,14",
+          "5,10", "6,10", "7,10", "5,11", "6,11", "7,11", "5,12", "6,12", "7,12", "8,13", "7,14", "7,15", "6,16",
+          "6,17", "3,15", "3,16", "3,17", "3,18", "3,19", "4,20", "5,21",
+          "27,10", "28,10", "29,10", "27,11", "28,11", "29,11", "27,12", "28,12", "29,12", "26,13", "27,14", "27,15",
+          "28,16", "28,17", "31,15", "31,16", "31,17", "31,18", "31,19", "30,20", "29,21"
+      };
       if (titleType == 7) {
-        route2 = new String[] {"14,7","14,8","14,9","20,7","20,8","20,9","15,11","16,12","17,12","18,12","19,11"};
-      }else if (titleType == 8) {
-        route2 = new String[] {"13,7","14,8","15,9","14,10","13,11","21,7","20,8","19,9","20,10","21,11","17,12"};
+        route2 = new String[] { "14,7", "14,8", "14,9", "20,7", "20,8", "20,9", "15,11", "16,12", "17,12", "18,12",
+            "19,11", "34,24" };
+      } else if (titleType == 8) {
+        route2 = new String[] { "13,7", "14,8", "15,9", "14,10", "13,11", "21,7", "20,8", "19,9", "20,10", "21,11",
+            "17,12", "34,24" };
       } else {
-        route2 = new String[] {"14,9","15,9","14,10","20,9","21,9","20,10"};
+        route2 = new String[] { "14,9", "15,9", "14,10", "20,9", "21,9", "20,10", "34,24" };
       }
       route = new String[route1.length + route2.length];
       System.arraycopy(route1, 0, route, 0, route1.length);

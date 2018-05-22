@@ -86,6 +86,13 @@ public class Main extends Application {
   public static void setAppMazeGenState(boolean appGenState) {
     appState.setMazeGenerated(appGenState);
   }
+  public static boolean getAppUnlimitedSightState() {
+    return appState.isUnlimitedSight();
+  }
+
+  public static void setAppUnlimitedSightState(boolean unlimitedState) {
+    appState.setUnlimitedSight(unlimitedState);
+  }
 
   public static void setMazeMap(Button[][] map) {
     if (map == null || map.length == 0 || map[0].length == 0) {

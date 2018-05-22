@@ -19,6 +19,8 @@ public class MazeConfigDto {
 
   // 視界範囲が壁に遮断されるかどうか
   private boolean mazeSightIgnoreWall = true;
+  // 夜モード ONすると現在地の視界しか表示しなくなる
+  private boolean nightMode = false;
 
   public boolean isSightMode() {
     return mazeSightWidth > 0;

@@ -7,4 +7,5 @@ public class AppStateDto {
 
   private boolean mazeInitialized = false;
   private boolean mazeGenerated = false;
+  private boolean unlimitedSight = false;
 }

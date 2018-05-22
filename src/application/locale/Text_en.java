@@ -31,6 +31,7 @@ public class Text_en extends ListResourceBundle {
         { "MazeType_1", "stick-push" },
         { "MazeType_2", "recursive division" },
         { "LShowAnime", "animation" },
+        { "LNightMode", "night mode" },
         { "BInitMazeCancel", "cancel" },
         { "BInitMaze", "ok" },
 

@@ -57,7 +57,10 @@ public class ConfigController extends BaseController implements Initializable {
   private Button BInitMaze;
   @FXML
   private Button BInitMazeCancel;
-
+  @FXML
+  private Label LNightMode;
+  @FXML
+  private CheckBox ChkBNightMode;
   @FXML
   private GridPane GPInitMaze;
 
@@ -78,6 +81,7 @@ public class ConfigController extends BaseController implements Initializable {
     String mazeSightWidth = TFMazeSightWidth.getText();
     boolean mazeSightIgnoreWall = ChkBMazeSightIgnoreWall.isSelected();
     boolean showAnime = ChkBShowAnime.isSelected();
+    boolean nightMode = ChkBNightMode.isSelected();
     String errMsg;
     // エラーチェック
     errMsg = configService.checkMazeWidth(mazeWidthStr);
@@ -108,6 +112,7 @@ public class ConfigController extends BaseController implements Initializable {
     dto.setMazeType(mazeType);
     dto.setMazeSightIgnoreWall(mazeSightIgnoreWall);
     dto.setShowAnime(showAnime);
+    dto.setNightMode(nightMode);
     if (configService.setInitConfig(dto)) {
       Main.setAppMazeGenState(false);
       Main.setAppMazeInitState(true);
@@ -128,6 +133,7 @@ public class ConfigController extends BaseController implements Initializable {
     TFMazeSightWidth.setText(Integer.toString(dto.getMazeSightWidth()));
     ChkBMazeSightIgnoreWall.setSelected(dto.isMazeSightIgnoreWall());
     ChkBShowAnime.setSelected(dto.isShowAnime());
+    ChkBNightMode.setSelected(dto.isNightMode());
     // 画面の初期化
     GridPane.setHalignment(BInitMaze, HPos.RIGHT);
     GridPane.setHalignment(BInitMazeCancel, HPos.RIGHT);
@@ -153,6 +159,8 @@ public class ConfigController extends BaseController implements Initializable {
     LMazeTypeList.setText(FXUtil.getLocaleText("LMazeTypeList"));
 
     LShowAnime.setText(FXUtil.getLocaleText("LShowAnime"));
+
+    LNightMode.setText(FXUtil.getLocaleText("LNightMode"));
 
     BInitMazeCancel.setText(FXUtil.getLocaleText("BInitMazeCancel"));
     BInitMaze.setText(FXUtil.getLocaleText("BInitMaze"));
