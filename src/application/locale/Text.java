@@ -2,6 +2,8 @@ package application.locale;
 
 import java.util.ListResourceBundle;
 
+import application.service.ConfigService;
+
 public class Text extends ListResourceBundle {
   @Override
   protected Object[][] getContents() {
@@ -38,6 +40,10 @@ public class Text extends ListResourceBundle {
         { "ErrInitFailed", "初期化に失敗しました" },
         { "ErrBeforeInit", "メニューから迷宮の初期化を行ってください" },
         { "ErrRouteNotFound", "移動ルートが見つかりません" },
+        { "ErrMazeWidth", "迷宮の幅は" + ConfigService.MAZE_MIN_WIDTH + "から" + ConfigService.MAZE_MAX_WIDTH + "までの値である必要があります" },
+        { "ErrMazeHeight", "迷宮の高さは" + ConfigService.MAZE_MIN_HEIGHT + "から" + ConfigService.MAZE_MAX_HEIGHT + "までの値である必要があります" },
+        { "ErrMazeGridWidth", "マスの幅は0より大きい値である必要があります" },
+        { "ErrMazeSightWidth", "視界範囲は0以上の値である必要があります" },
         { "ErrSavingMaze", "迷宮ファイルの出力に失敗しました" },
         { "InfoMazeSaved", "迷宮ファイルを出力しました" },
         { "InfoMazeCleared", "迷宮踏破おめでとうございます" },

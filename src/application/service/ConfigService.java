@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Properties;
 
+import application.Utils.FXUtil;
 import application.dto.MazeConfigDto;
 import application.enumType.MazeType;
 
@@ -98,7 +99,7 @@ public class ConfigService {
     if (isValidMazeWidth(mazeWidthStr)) {
       return "";
     }
-    return "迷宮の幅は" + MAZE_MIN_WIDTH + "から" + MAZE_MAX_WIDTH + "までの値である必要があります";
+    return FXUtil.getLocaleText("ErrMazeWidth");
   }
 
   public boolean isValidMazeHeight(String mazeHeightStr) {
@@ -121,7 +122,7 @@ public class ConfigService {
     if (isValidMazeHeight(mazeHeightStr)) {
       return "";
     }
-    return "迷宮の幅は" + MAZE_MIN_HEIGHT + "から" + MAZE_MAX_HEIGHT + "までの値である必要があります";
+    return FXUtil.getLocaleText("ErrMazeHeight");
   }
 
   public boolean isValidMazeGridWidth(String mazeGridWidthStr) {
@@ -144,7 +145,7 @@ public class ConfigService {
     if (isValidMazeGridWidth(mazeGridWidthStr)) {
       return "";
     }
-    return "マスの幅は0より大きい値である必要があります";
+    return FXUtil.getLocaleText("ErrMazeGridWidth");
   }
 
   public boolean isValidMazeSightWidth(String mazeSightWidthStr) {
@@ -167,7 +168,7 @@ public class ConfigService {
     if (isValidMazeSightWidth(mazeSightWidthStr)) {
       return "";
     }
-    return "視界範囲は0以上の値である必要があります";
+    return FXUtil.getLocaleText("ErrMazeSightWidth");
   }
 
 }

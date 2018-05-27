@@ -2,6 +2,8 @@ package application.locale;
 
 import java.util.ListResourceBundle;
 
+import application.service.ConfigService;
+
 public class Text_zh extends ListResourceBundle {
 
   @Override
@@ -39,6 +41,10 @@ public class Text_zh extends ListResourceBundle {
         { "ErrInitFailed", "初始化失败" },
         { "ErrBeforeInit", "请先从菜单执行迷宫初始化" },
         { "ErrRouteNotFound", "找不到可移动的路径" },
+        { "ErrMazeWidth", "迷宮的宽必须为" + ConfigService.MAZE_MIN_WIDTH + "至" + ConfigService.MAZE_MAX_WIDTH + "的整数" },
+        { "ErrMazeHeight", "迷宮的高必须为" + ConfigService.MAZE_MIN_HEIGHT + "至" + ConfigService.MAZE_MAX_HEIGHT + "的整数" },
+        { "ErrMazeGridWidth", "迷宫格边长必须大于0" },
+        { "ErrMazeSightWidth", "视野必须为大于等于0的整数" },
         { "ErrSavingMaze", "导出迷宫失败" },
         { "InfoMazeSaved", "导出迷宫成功" },
         { "InfoMazeCleared", "恭喜走出迷宫" },

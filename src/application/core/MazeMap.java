@@ -136,6 +136,8 @@ public class MazeMap extends MazeMapBase {
           map[y][x].setPrefHeight(conf.getMazeGridWidth());
           map[y][x].setMinHeight(conf.getMazeGridWidth());
           map[y][x].setMaxHeight(conf.getMazeGridWidth());
+          // ROADのclassをデフォルトにセット
+          map[y][x].getStyleClass().add("");
           map[y][x].setOnAction(event -> {
             MazeButton b = (MazeButton) event.getSource();
             if (b.isDisabled() || finished) {
@@ -161,7 +163,7 @@ public class MazeMap extends MazeMapBase {
 
   // 指定マスを中心に視界内のマスの可視性を処理する
   protected void setSight(MazePoint point) {
-    if (!conf.isSightMode() || Main.getAppUnlimitedSightState()) {
+    if (!conf.isSightMode() || Main.getAppUnlimitedSightState() || isWall(point)) {
       return;
     }
     // 視野制限&夜モードはマスの可視性をリセットする操作も考慮
@@ -169,60 +171,101 @@ public class MazeMap extends MazeMapBase {
     int currentX = point.getX();
     int currentY = point.getY();
     int sight = conf.getMazeSightWidth();
-    // 壁を無視なら視界内のマスは全部処理
-    if (conf.isMazeSightIgnoreWall()) {
-      for (int i = 0; i <= sight; i++) {
-        for (int x = getSafeX(currentX - i); x <= getSafeX(currentX + i); x++) {
-          for (int y = getSafeY(currentY - (sight - i)); y <= getSafeY(currentY + (sight - i)); y++) {
-            MazePoint p = getPointByCoordinate(x, y);
-            if (p.isVisible() != targetVisible) {
-              p.setVisible(targetVisible);
-              refreshUI(p);
-            }
+    // 見た目のupとdown、実際y座標は逆
+    int rightUpLimit = sight;
+    int rightDownLimit = sight;
+    int leftUpLimit = sight;
+    int leftDownLimit = sight;
+    int tmpLimit;
+
+    int x;
+    int y;
+    MazePoint p;
+    // x軸を移動して、y軸を両方向に伸ばす方法でやる
+    for (int i = 0; i <= sight; i++) {
+      rightUpLimit = Math.min(sight - i, rightUpLimit);
+      rightDownLimit = Math.min(sight - i, rightDownLimit);
+      // 右へ
+      x = getSafeX(currentX + i);
+
+      //右下
+      tmpLimit = getSafeY(currentY + rightDownLimit);
+      for (y = currentY; y <= tmpLimit; y++) {
+        p = getPointByCoordinate(x, y);
+        //壁透視OFFの場合、斜めのマスの隣が壁なら、見えないので処理しない
+        if (p.isVisible() != targetVisible && (conf.isMazeSightIgnoreWall() || (isRoad(x - 1,y) || isRoad(x, y - 1)))) {
+          p.setVisible(targetVisible);
+          refreshUI(p);
+        }
+        if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+          rightDownLimit = Math.min(rightDownLimit, y - currentY);
+          if (i == 0) {
+            break;
           }
         }
       }
-    } else {
-      // 四方向しか処理しない、且つ壁に当たると壁だけ処理して終了
-      for (int x = 0; x <= sight; x++) {
-        MazePoint p = getPointByCoordinate(getSafeX(currentX + x), currentY);
-        if (p.isVisible() != targetVisible) {
+      //右上
+      tmpLimit = getSafeY(currentY - rightUpLimit);
+      for (y = currentY; y >= tmpLimit; y--) {
+        p = getPointByCoordinate(x, y);
+        if (p.isVisible() != targetVisible && (conf.isMazeSightIgnoreWall() || (isRoad(x - 1,y) || isRoad(x, y + 1)))) {
           p.setVisible(targetVisible);
           refreshUI(p);
         }
-        if (isWall(p)) {
-          break;
+        if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+          rightUpLimit = Math.min(rightUpLimit, currentY - y);
+          if (i == 0) {
+            break;
+          }
         }
       }
-      for (int x = 1; x <= sight; x++) {
-        MazePoint p = getPointByCoordinate(getSafeX(currentX - x), currentY);
-        if (p.isVisible() != targetVisible) {
+      //真横に壁があるなら終わり
+      p = getPointByCoordinate(x, currentY);
+      if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+        break;
+      }
+    }
+
+    for (int i = 0; i <= sight; i++) {
+      leftUpLimit = Math.min(sight - i, leftUpLimit);
+      leftDownLimit = Math.min(sight - i, leftDownLimit);
+      // 左へ
+      x = getSafeX(currentX - i);
+      //左下
+      tmpLimit = getSafeY(currentY + leftDownLimit);
+      for (y = currentY; y <= tmpLimit; y++) {
+        p = getPointByCoordinate(x, y);
+        if (p.isVisible() != targetVisible && (conf.isMazeSightIgnoreWall() || (isRoad(x + 1,y) || isRoad(x, y - 1)))) {
           p.setVisible(targetVisible);
           refreshUI(p);
         }
-        if (isWall(p)) {
-          break;
+        if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+          leftDownLimit = Math.min(leftDownLimit, y - currentY);
+          if (i == 0) {
+            break;
+          }
         }
       }
-      for (int y = 1; y <= sight; y++) {
-        MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY + y));
-        if (p.isVisible() != targetVisible) {
+      //左上
+      tmpLimit = getSafeY(currentY - leftUpLimit);
+      for (y = currentY; y >= tmpLimit; y--) {
+        p = getPointByCoordinate(x, y);
+        if (p.isVisible() != targetVisible && (conf.isMazeSightIgnoreWall() || (isRoad(x + 1,y) || isRoad(x, y + 1)))) {
           p.setVisible(targetVisible);
           refreshUI(p);
         }
-        if (isWall(p)) {
-          break;
+        if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+          leftUpLimit = Math.min(leftUpLimit, currentY - y);
+          if (i == 0) {
+            break;
+          }
         }
       }
-      for (int y = 1; y <= sight; y++) {
-        MazePoint p = getPointByCoordinate(currentX, getSafeY(currentY - y));
-        if (p.isVisible() != targetVisible) {
-          p.setVisible(targetVisible);
-          refreshUI(p);
-        }
-        if (isWall(p)) {
-          break;
-        }
+
+      //真横に壁があるなら終わり
+      p = getPointByCoordinate(x, currentY);
+      if (isWall(p) && !conf.isMazeSightIgnoreWall()) {
+        break;
       }
     }
   }
@@ -232,7 +275,7 @@ public class MazeMap extends MazeMapBase {
   }
 
   protected boolean setCurrentPoint(MazePoint point, boolean isLineMode) {
-    if (!point.isVisible()) {
+    if (!point.isVisible() && isLineMode) {
       showUnclickable(point);
       return false;
     }
@@ -387,49 +430,40 @@ public class MazeMap extends MazeMapBase {
     System.out.println("refreshing UI:" + x + "," + y);
     MazeButton ui = getUIByCoordinate(x, y);
     List<String> styleList = ui.getStyleClass();
-    // 最初の一個目はbuttonというclass
-    if (styleList.size() > 1) {
-      String nodeClass = styleList.get(0);
-      styleList.clear();
-      styleList.add(nodeClass);
+    // classが変わったかどうかをチェック
+    String pointClass = getPointClass(p);
+    if (!pointClass.equals(styleList.get(1))) {
+      styleList.set(1, pointClass);
+      if (pointClass.equals("unvisible") || pointClass.equals("danger")) {
+        ui.setDisable(true);
+      } else {
+        ui.setDisable(false);
+      }
     }
 
+
+  }
+  protected String getPointClass(MazePoint p) {
     if (p.isEndPoint()) {
-      ui.setDisable(false);
-      styleList.add("warning");
-      return;
+      return "warning";
     }
     if (p.isCurrentPoint()) {
-      ui.setDisable(false);
-      styleList.add("current");
-      return;
+      return "current";
     }
     if (p.isStartPoint()) {
-      ui.setDisable(false);
-      styleList.add("info");
-      return;
+      return "info";
     }
     if (!p.isVisible()) {
-      ui.setDisable(true);
-      styleList.add("unvisible");
-      return;
+      return "unvisible";
     }
     if (p.isVisited()) {
-      ui.setDisable(false);
-      styleList.add("visited");
-      return;
-    }
-    if (isRoad(p)) {
-      ui.setDisable(false);
-      //styleList.add("success");
-      return;
+      return "visited";
     }
     if (isWall(p)) {
-      ui.setDisable(true);
-      styleList.add("danger");
+      return "danger";
     }
+    return "";
   }
-
   public int getCurrentX() {
     return lastVisitedPoint == null ? -1 : lastVisitedPoint.getX();
   }
@@ -552,6 +586,7 @@ public class MazeMap extends MazeMapBase {
         System.out.println("running title step" + step);
         if (step >= route.length) {
           scheduler.shutdown();
+          setAllVisible();
           Main.enableMenu();
           return;
         }
