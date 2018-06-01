@@ -430,17 +430,20 @@ public class MazeMap extends MazeMapBase {
     System.out.println("refreshing UI:" + x + "," + y);
     MazeButton ui = getUIByCoordinate(x, y);
     List<String> styleList = ui.getStyleClass();
-    // classが変わったかどうかをチェック
-    String pointClass = getPointClass(p);
-    if (!pointClass.equals(styleList.get(1))) {
-      styleList.set(1, pointClass);
-      if (pointClass.equals("unvisible") || pointClass.equals("danger")) {
-        ui.setDisable(true);
-      } else {
-        ui.setDisable(false);
-      }
+    // 何故かclassを設定し直さないとclassがロストすることがある 一旦元のやり方に戻る
+    // 最初の一個目はbuttonというclass
+    if (styleList.size() > 1) {
+      String nodeClass = styleList.get(0);
+      styleList.clear();
+      styleList.add(nodeClass);
     }
-
+    String pointClass = getPointClass(p);
+    styleList.add(pointClass);
+    if (pointClass.equals("unvisible") || pointClass.equals("danger")) {
+      ui.setDisable(true);
+    } else {
+      ui.setDisable(false);
+    }
 
   }
   protected String getPointClass(MazePoint p) {
@@ -586,7 +589,7 @@ public class MazeMap extends MazeMapBase {
         System.out.println("running title step" + step);
         if (step >= route.length) {
           scheduler.shutdown();
-          setAllVisible();
+          //setAllVisible();
           Main.enableMenu();
           return;
         }
