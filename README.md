@@ -1,10 +1,10 @@
 # maze_generator
 
 
-![タイトル画面](https://pic.dark.moe/images/2018/05/04/296f68f218fe36acaa3ebe8052340aa6.png "タイトル画面")
-![メイン画面](https://pic.dark.moe/images/2018/04/30/0963714b8052a4c576c86b642db40fc2.png "メイン画面")
-![迷宮生成](https://pic.dark.moe/images/2018/05/04/f9f9623dbe6a565e2a3f70d34687f021.gif "迷宮生成")
-![設定画面](https://pic.dark.moe/images/2018/05/22/976b0fec8a20da3abd9e33c36f30c11b.png "設定画面")
+![タイトル画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/0.png "タイトル画面")
+![メイン画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/2.png "メイン画面")
+![設定画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/1.png "設定画面")
+![迷宮生成](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/recursive_division.gif "迷宮生成")
 
 # このプロジェクトについて
 迷宮を生成するデモです。気が向いたら新しい迷宮生成のアルゴリズムを追加するかもしれません。
@@ -33,7 +33,7 @@
 
 ## メイン画面について
 
-![メイン画面](https://pic.dark.moe/images/2018/04/30/0963714b8052a4c576c86b642db40fc2.png "メイン画面")
+![メイン画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/2.png "メイン画面")
 
 | マスタイプ | 説明 |
 | :---------- | :--- |
@@ -54,7 +54,7 @@
 
 ## 設定について
 
-![設定画面](https://pic.dark.moe/images/2018/05/22/976b0fec8a20da3abd9e33c36f30c11b.png "設定画面")
+![設定画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/1.png "設定画面")
 
 | 項目 | 説明 |
 | :---------- | :--- |
@@ -75,9 +75,9 @@
 
 # maze_generator
 
-![标题画面](https://pic.dark.moe/images/2018/05/04/73c15292094ce852afc4da045dad368e.png "标题画面")
-![主画面](https://pic.dark.moe/images/2018/05/04/05f1d5089bc0063867274a739f9b816f.png "主画面")
-![设置画面](https://pic.dark.moe/images/2018/05/22/694331daad89bb983c303a8edd33c7f0.png "设置画面")
+![标题画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/0_zh.png "标题画面")
+![主画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/2_zh.png "主画面")
+![设置画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/1_zh.png "设置画面")
 
 # 关于这个项目
 迷宫生成演示工具。可能以后会追加新的迷宫生成方法。
@@ -110,7 +110,7 @@
 
 ## 主画面
 
-![主画面](https://pic.dark.moe/images/2018/05/04/05f1d5089bc0063867274a739f9b816f.png "主画面")
+![主画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/2_zh.png "主画面")
 
 | 格子类型 | 说明 |
 | :---------- | :--- |
@@ -130,7 +130,7 @@
 
 ## 设置画面
 
-![设置画面](https://pic.dark.moe/images/2018/05/22/694331daad89bb983c303a8edd33c7f0.png "设置画面")
+![设置画面](https://github.com/zlwzxy1989/maze_generator/blob/master/intro_resource/1_zh.png "设置画面")
 
 | 项目 | 说明 |
 | :---------- | :--- |
